@@ -1,0 +1,29 @@
+[tool.poetry.dependencies]
+python = "^3.10.5"
+Django = "^3.2"
+djangorestframework = "^3.14"
+psycopg2-binary = "^2.9.3"
+gunicorn = "^20.1.0"
+environs = "^9.5.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^6.0"
+isort = "^5.11"
+black = "^22.12"
+flake8-docstrings = "^1.6"
+flake8-return = "^1.2"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+extend-exclude = '\/migrations\/'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "githance"
+version = "0.1.0"
+description = ""
+authors = ["githance-team"]
