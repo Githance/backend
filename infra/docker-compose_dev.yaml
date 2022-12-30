@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13.3
+    restart: always
+    container_name: db_dev
+    volumes:
+      - githance_db_dev:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  backend:
+    image: -
+    restart: always
+    volumes:
+      - static_value_dev:/app/static/
+      - media_value_dev:/app/media/
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+  nginx:
+    image: nginx:1.21.3-alpine
+    ports:
+      - "80:80" # TODO: change dev port to 8080 for example
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_value_dev:/var/html/static/
+      - media_value_dev:/var/html/media/
+    depends_on:
+      - backend
+
+volumes:
+  githance_db_dev:
+  static_value_dev:
+  media_value_dev:

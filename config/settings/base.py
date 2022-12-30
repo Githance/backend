@@ -79,11 +79,14 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": env.str("DB_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": env.str("DB_NAME", BASE_DIR / "db.sqlite3"),
+        "USER": env.str("POSTGRES_USER"),
+        "PASSWORD": env.str("POSTGRES_PASSWORD"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": env.str("DB_PORT")
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
