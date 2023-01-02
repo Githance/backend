@@ -31,6 +31,14 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 THIRD_PARTY_APPS = [
+    # authentication
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    # general
     "rest_framework",
 ]
 LOCAL_APPS = [
@@ -58,7 +66,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -72,8 +80,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
-SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -131,5 +137,51 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 
+SITE_ID = 1
+
 # Django REST framework
-REST_FRAMEWORK = {}
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",)
+}
+
+# AUTHENTICATION
+REST_USE_JWT = True
+REST_AUTH_TOKEN_MODEL = None
+JWT_AUTH_REFRESH_COOKIE = "ref_token"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+# вроде про валидацию
+# OLD_PASSWORD_FIELD_ENABLED = True
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_PRESERVE_USERNAME_CASING = False
+
+# ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "127.0.0.1:8000/here"
+# ACCOUNT_SIGNUP_REDIRECT_URL "127.0.0.1:8000/there"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": "1000575426539-46q4dr57cr4hq4v2s648rfqie23ddjs9.apps.googleusercontent.com",
+            "secret": "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",
+            "key": "",
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "VERIFIED_EMAIL": True,
+    }
+}
+
+# https://mandrillapp.com/track/click/30166792/miro.com?p=eyJzIjoiSnI4SWRhMkdfNzNTOGNTODY4cDlrMjdmSGZBIiwidiI6MSwicCI6IntcInVcIjozMDE2Njc5MixcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL21pcm8uY29tXFxcL2NvbmZpcm0tZW1haWxcXFwvYWdRMlhlWjJzdzNaaVMxNjFtZFFvTkg4UDVwQ1FDS0hcXFwvP3RyYWNrPXRydWUmdXRtX3NvdXJjZT1ub3RpZmljYXRpb24mdXRtX21lZGl1bT1lbWFpbCZ1dG1fY2FtcGFpZ249ZW1haWwtY2hhbmdlLWNvbmZpcm1hdGlvbiZ1dG1fY29udGVudD1jb25maXJtLWVtYWlsLXRyYWNrXCIsXCJpZFwiOlwiZGM2MjRjNDM1YTgyNDU5Njg1ZjllMTNiNWRiOGVkOTdcIixcInVybF9pZHNcIjpbXCI1OTA0NWI0ZTg0MzI5NjAxMzY5MzUzMjJhZGZjZmU5ZDMxNzYyNmJhXCJdfSJ9
