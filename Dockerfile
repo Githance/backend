@@ -4,7 +4,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN python3 -m pip install --upgrade pip
 RUN pip3 install -r requirements.txt
-COPY apps/ ./apps/
-COPY config/ ./config/
 COPY manage.py .
+COPY config/ ./config/
+COPY apps/ ./apps/
 CMD gunicorn config.wsgi:application -c /app/config/gunicorn.conf.py

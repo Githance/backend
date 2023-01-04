@@ -19,21 +19,21 @@ See the **/infra/.env.example** file.
 3. backend, which rebuilding with actual code
 ```
 1. cd infra
-2. docker-compose -f docker-compose_dev.yaml up -d --build
+2. docker-compose -f docker-compose_local.yaml up -d --build
 ```
 ###### Useful commands
 
 Making migrations:
 ```
- docker-compose -f docker-compose_dev.yaml exec backend python manage.py migrate
+docker-compose -f docker-compose_local.yaml exec backend python manage.py migrate
  ```
 
 Unloading static files:
 ```
- docker-compose -f docker-compose_dev.yaml exec backend python manage.py collectstatic --no-input
+docker-compose -f docker-compose_local.yaml exec backend python manage.py collectstatic --no-input
 ```
 
 Creating superuser:
 ```
-infra macbookpro$ docker-compose -f docker-compose_dev.yaml exec backend python manage.py createsuperuser
+docker-compose -f docker-compose_local.yaml exec backend python manage.py createsuperuser
 ```
