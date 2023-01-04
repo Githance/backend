@@ -9,7 +9,7 @@ from .forms import CustomUserChangeForm, CustomUserCreationForm
 User = get_user_model()
 
 # https://django-allauth.readthedocs.io/en/latest/advanced.html#admin
-# admin.site.login = login_required(admin.site.login)
+admin.site.login = login_required(admin.site.login)
 
 
 @admin.register(User)

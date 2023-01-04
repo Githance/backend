@@ -1,8 +1,15 @@
+from django.contrib.auth import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import UserManager
 
 
 class CustomUserManager(UserManager):
+    def create_verified_email(self, user):
+        from allauth.account.models import EmailAddress
+
+        email = EmailAddress(user=user, email=user.email, verified=True, primary=True)
+        email.save()
+
     def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError("The given email must be set")
@@ -10,6 +17,10 @@ class CustomUserManager(UserManager):
         user = self.model(email=email, **extra_fields)
         user.password = make_password(password)
         user.save(using=self._db)
+
+        if user.is_superuser and "allauth.account" in settings.INSTALLED_APPS:
+            self.create_verified_email(user)
+
         return user
 
     def create_user(self, email, password=None, **extra_fields):

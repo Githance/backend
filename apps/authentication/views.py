@@ -8,6 +8,19 @@ from django.utils.http import urlencode
 from django.views import View
 
 
+
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+
+@api_view()
+@permission_classes([IsAuthenticated])
+def placeholder(request):
+    return Response("ok")
+
+
 class SocialLoginView(View):
     """
     Redirect the user to the authorization server to receive an authorization code.
