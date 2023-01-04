@@ -41,9 +41,7 @@ THIRD_PARTY_APPS = [
     # general
     "rest_framework",
 ]
-LOCAL_APPS = [
-    "apps.users",
-]
+LOCAL_APPS = ["apps.users", "apps.authentication"]
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -150,7 +148,7 @@ REST_AUTH_TOKEN_MODEL = None
 JWT_AUTH_REFRESH_COOKIE = "ref_token"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
+    # "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 # вроде про валидацию
@@ -183,5 +181,7 @@ SOCIALACCOUNT_PROVIDERS = {
         "VERIFIED_EMAIL": True,
     }
 }
+
+# SOCIALACCOUNT_ADAPTER = "apps.authentication.adapters.SocialAccountAdapter"
 
 # https://mandrillapp.com/track/click/30166792/miro.com?p=eyJzIjoiSnI4SWRhMkdfNzNTOGNTODY4cDlrMjdmSGZBIiwidiI6MSwicCI6IntcInVcIjozMDE2Njc5MixcInZcIjoxLFwidXJsXCI6XCJodHRwczpcXFwvXFxcL21pcm8uY29tXFxcL2NvbmZpcm0tZW1haWxcXFwvYWdRMlhlWjJzdzNaaVMxNjFtZFFvTkg4UDVwQ1FDS0hcXFwvP3RyYWNrPXRydWUmdXRtX3NvdXJjZT1ub3RpZmljYXRpb24mdXRtX21lZGl1bT1lbWFpbCZ1dG1fY2FtcGFpZ249ZW1haWwtY2hhbmdlLWNvbmZpcm1hdGlvbiZ1dG1fY29udGVudD1jb25maXJtLWVtYWlsLXRyYWNrXCIsXCJpZFwiOlwiZGM2MjRjNDM1YTgyNDU5Njg1ZjllMTNiNWRiOGVkOTdcIixcInVybF9pZHNcIjpbXCI1OTA0NWI0ZTg0MzI5NjAxMzY5MzUzMjJhZGZjZmU5ZDMxNzYyNmJhXCJdfSJ9
