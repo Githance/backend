@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 
 from environs import Env
@@ -31,17 +32,20 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 THIRD_PARTY_APPS = [
-    # authentication
+    # authentication apps
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    # general
+    # general apps
     "rest_framework",
 ]
-LOCAL_APPS = ["apps.users", "apps.authentication"]
+LOCAL_APPS = [
+    "apps.users",
+    "apps.authentication",
+]
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -131,58 +135,65 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # -------------------------------- AUTHENTICATION -------------------------------------
+
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 
 SITE_ID = 1
 
+AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+
 # Django REST framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",)
 }
-AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+
+# dj-rest-auth
+# https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
 REST_USE_JWT = True
 REST_AUTH_TOKEN_MODEL = None
 JWT_AUTH_REFRESH_COOKIE = "ref_token"
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+JWT_AUTH_SECURE = True
+REST_AUTH_SERIALIZERS = {
+    "JWT_SERIALIZER": "apps.authentication.serializers.LoginJWTSerializer",
+}
 
-# вроде про валидацию
-# OLD_PASSWORD_FIELD_ENABLED = True
+# Simple JWT
+SIMPLE_JWT = {
+    # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#access-token-lifetime
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#rotate-refresh-tokens
+    "ROTATE_REFRESH_TOKENS": True,
+}
 
+# https://docs.djangoproject.com/en/3.2/ref/settings/#login-url
+LOGIN_URL = "/auth/"
+
+# django-allauth
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"
-
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_PRESERVE_USERNAME_CASING = False
-
-# ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "127.0.0.1:8000/here"
-# ACCOUNT_SIGNUP_REDIRECT_URL = "http://localhost:8000/there/"
-
-
-# https://docs.djangoproject.com/en/3.2/ref/settings/#login-url
-LOGIN_URL = "/auth/login/"
-# https://docs.djangoproject.com/en/3.2/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "/"
-# https://docs.djangoproject.com/en/3.2/ref/settings/#logout-redirect-url
-LOGOUT_REDIRECT_URL = "/"
-# https://docs.djangoproject.com/en/3.2/ref/settings/#session-cookie-path
-SESSION_COOKIE_PATH = "/admin/"
-
+SOCIALACCOUNT_ADAPTER = "apps.authentication.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
-        # "APP": {
-        #     "client_id": "1000575426539-46q4dr57cr4hq4v2s648rfqie23ddjs9.apps.googleusercontent.com",
-        #     "secret": "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",
-        #     "key": "",
-        # },
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
+        "APP": {
+            "client_id": "1000575426539-46q4dr57cr4hq4v2s648rfqie23ddjs9.apps.googleusercontent.com",
+            "secret": "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",
+            "key": "",
+        },
         "VERIFIED_EMAIL": True,
     }
 }
+
+# URLs for sending confirmation emails to the frontend.
+FRONTEND_EMAIL_CONFIRM_URL = "auth/email/confirm/"
+FRONTEND_PASS_RESET_CONFIRM_URL = "auth/password/reset/confirm/"
+
+
+# -------------------------------- SENDING EMAIL -------------------------------------
+
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-EMAIL_BACKEND
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
