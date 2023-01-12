@@ -1,19 +1,22 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
-User = get_user_model()
+admin.site.site_header = "Githance, административная часть"
+admin.site.site_title = "Githance"
 
 # https://django-allauth.readthedocs.io/en/latest/advanced.html#admin
 admin.site.login = login_required(admin.site.login)
 
+User = get_user_model()
+
 
 @admin.register(User)
-class CustomUserAdmin(UserAdmin):
+class UserAdmin(DjangoUserAdmin):
     fieldsets = (
         (
             None,
@@ -24,7 +27,7 @@ class CustomUserAdmin(UserAdmin):
                 )
             },
         ),
-        (_("Personal info"), {"fields": ("first_name", "last_name")}),
+        (_("Personal info"), {"fields": ("name",)}),
         (
             _("Permissions"),
             {
@@ -44,12 +47,12 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "password1", "password2"),
+                "fields": ("email", "name", "password1", "password2"),
             },
         ),
     )
-    list_display = ("email", "first_name", "last_name", "is_staff")
-    search_fields = ("first_name", "last_name", "email")
+    list_display = ("email", "name", "is_staff")
+    search_fields = ("name", "email")
     ordering = ("email",)
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm

@@ -1,7 +1,10 @@
 from allauth.account import app_settings as account_settings
-from allauth.account.utils import user_email
+from allauth.account.utils import user_email, user_field
 from allauth.socialaccount import app_settings
-from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from allauth.socialaccount.adapter import (
+    DefaultSocialAccountAdapter,
+    valid_email_or_none,
+)
 from allauth.utils import email_address_exists
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -23,3 +26,13 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
             elif app_settings.EMAIL_REQUIRED:
                 auto_signup = False
         return auto_signup
+
+    def populate_user(self, request, sociallogin, data):
+        email = data.get("email")
+        first_name = data.get("first_name")
+        last_name = data.get("last_name")
+        name = " ".join((first_name, last_name)).strip()
+        user = sociallogin.user
+        user_email(user, valid_email_or_none(email) or "")
+        user_field(user, "name", name or "Безымянный")
+        return user

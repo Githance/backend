@@ -185,7 +185,7 @@ SIMPLE_JWT = {
 }
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#login-url
-LOGIN_URL = "/auth/"
+LOGIN_URL = "/auth/login/"
 
 # django-allauth
 # https://django-allauth.readthedocs.io/en/latest/configuration.html

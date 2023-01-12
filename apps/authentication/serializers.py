@@ -21,11 +21,11 @@ class RefreshAccessTokenSerializer(CookieTokenRefreshSerializer):
 
 class RegisterSerializer(DjRestAuthRegisterSerializer):
     username = None
-    first_name = serializers.CharField(required=True, max_length=150, min_length=1)
+    name = serializers.CharField(required=True, max_length=40, min_length=1)
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
-        data.update({"first_name": self.validated_data.get("first_name", "")})
+        data.update({"name": self.validated_data.get("name", "")})
         return data
 
 
