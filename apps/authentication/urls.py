@@ -1,12 +1,9 @@
-from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import (
     RegisterView,
     ResendEmailVerificationView,
     VerifyEmailView,
 )
 from dj_rest_auth.views import (
-    LoginView,
-    LogoutView,
     PasswordChangeView,
     PasswordResetConfirmView,
     PasswordResetView,
@@ -14,7 +11,14 @@ from dj_rest_auth.views import (
 from django.conf import settings
 from django.urls import include, path
 
-from .views import GoogleLoginCallbackView, GoogleLoginView, dummy
+from .views import (
+    GoogleLoginCallbackView,
+    GoogleLoginView,
+    LoginWithPasswordView,
+    LogoutView,
+    RefreshAccessTokenView,
+    dummy,
+)
 
 main_urls = [
     # dj-rest-auth.registration
@@ -26,9 +30,9 @@ main_urls = [
         name="rest_resend_email",
     ),
     # dj-rest-auth
-    path("login/", LoginView.as_view(), name="rest_login"),
+    path("login/", LoginWithPasswordView.as_view(), name="rest_login"),
     path("logout/", LogoutView.as_view(), name="rest_logout"),
-    path("token/refresh/", get_refresh_view().as_view(), name="token_refresh"),
+    path("token/refresh/", RefreshAccessTokenView.as_view(), name="token_refresh"),
     path("password/reset/", PasswordResetView.as_view(), name="rest_password_reset"),
     path(
         "password/reset/confirm/",

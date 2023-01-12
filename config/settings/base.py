@@ -41,6 +41,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount.providers.google",
     # general apps
     "rest_framework",
+    "drf_spectacular",
 ]
 LOCAL_APPS = [
     "apps.users",
@@ -100,7 +101,7 @@ if db_engine:
         "USER": env.str("POSTGRES_USER"),
         "PASSWORD": env.str("POSTGRES_PASSWORD"),
         "HOST": env.str("DB_HOST"),
-        "PORT": env.str("DB_PORT")
+        "PORT": env.str("DB_PORT"),
     }
 
 # Password validation
@@ -156,7 +157,10 @@ AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend"
 
 # Django REST framework
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("dj_rest_auth.jwt_auth.JWTCookieAuthentication",)
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # dj-rest-auth
@@ -166,7 +170,10 @@ REST_AUTH_TOKEN_MODEL = None
 JWT_AUTH_REFRESH_COOKIE = "ref_token"
 JWT_AUTH_SECURE = True
 REST_AUTH_SERIALIZERS = {
-    "JWT_SERIALIZER": "apps.authentication.serializers.LoginJWTSerializer",
+    "JWT_SERIALIZER": "apps.authentication.serializers.LoginAccessTokenSerializer",
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "apps.authentication.serializers.RegisterSerializer",
 }
 
 # Simple JWT
@@ -208,3 +215,22 @@ FRONTEND_PASS_RESET_CONFIRM_URL = "auth/password/reset/confirm/"
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-EMAIL_BACKEND
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+# ------------------------------------ OpenAPI ---------------------------------------
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Githance API",
+    "DESCRIPTION": "",
+    "VERSION": "0.1.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "REDOC_UI_SETTINGS": {"sideNavStyle": "path-only"},
+    # TODO
+    # "AUTHENTICATION_WHITELIST": ['rest_framework_simplejwt.authentication.JWTAuthentication'],
+    # "SERVE_AUTHENTICATION": ['rest_framework.authentication.TokenAuthentication'],
+    # 'DISABLE_ERRORS_AND_WARNINGS': True,
+    "OAUTH2_FLOWS": ["authorizationCode"],
+    "OAUTH2_AUTHORIZATION_URL": "http://localhost:8000/api/v1/auth/login/",
+    "OAUTH2_TOKEN_URL": None,
+    "OAUTH2_REFRESH_URL": None,
+    "OAUTH2_SCOPES": None,
+}

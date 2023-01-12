@@ -7,7 +7,9 @@ from .managers import CustomUserManager
 
 class User(AbstractUser):
     username = None
-    USERNAME_FIELD = "email"
     email = models.EmailField(_("email address"), unique=True)
-    REQUIRED_FIELDS = []
+    first_name = models.CharField(_("first name"), max_length=150, default=None)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ("first_name",)
     objects = CustomUserManager()
