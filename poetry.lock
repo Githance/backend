@@ -124,7 +124,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "dj-rest-auth"
-version = "2.2.6"
+version = "2.2.7"
 description = "Authentication and Registration in Django Rest Framework"
 category = "main"
 optional = false
@@ -135,7 +135,7 @@ Django = ">=2.0"
 djangorestframework = ">=3.7.0"
 
 [package.extras]
-with_social = ["django-allauth (>=0.40.0,<0.51.0)"]
+with_social = ["django-allauth (>=0.40.0,<0.53.0)"]
 
 [[package]]
 name = "django"
@@ -168,6 +168,17 @@ pyjwt = {version = ">=1.7", extras = ["crypto"]}
 python3-openid = ">=3.0.8"
 requests = "*"
 requests-oauthlib = ">=0.3.0"
+
+[[package]]
+name = "django-cors-headers"
+version = "3.13.0"
+description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Django = ">=3.2"
 
 [[package]]
 name = "django-filter"
@@ -623,7 +634,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10.5"
-content-hash = "80c92424780abc8444169f18d8fa84d5445a70b04e5465ccf39e6a169ff5b7c4"
+content-hash = "bbb82457c5f8d119b6ca0645cc5eb38245437c53474a155db3c2b83223abf97e"
 
 [metadata.files]
 asgiref = []
@@ -639,6 +650,7 @@ defusedxml = []
 dj-rest-auth = []
 django = []
 django-allauth = []
+django-cors-headers = []
 django-filter = []
 djangorestframework = []
 djangorestframework-simplejwt = []

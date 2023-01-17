@@ -10,7 +10,7 @@ from dj_rest_auth.views import LogoutView as DjRestAuthLogoutView
 from django.http import HttpResponseRedirect
 from django.shortcuts import reverse
 from django.utils.http import urlencode
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -110,7 +110,7 @@ class RefreshAccessTokenView(RefreshViewWithCookieSupport):
     serializer_class = RefreshAccessTokenSerializer
 
 
-@extend_schema_view(post=extend_schema(responses=LoginAccessTokenSerializer))
+@extend_schema(responses=LoginAccessTokenSerializer)
 class LoginWithPasswordView(LoginView):
     """
     Receive an email and a password, then authenticate the user.
@@ -121,7 +121,6 @@ class LoginWithPasswordView(LoginView):
     serializer_class = LoginWithPasswordSerializer
 
 
-# @extend_schema_view(post=extend_schema(responses=RestAuthDetailSerializer))
 class LogoutView(DjRestAuthLogoutView):
     """
     Clean up cookies.

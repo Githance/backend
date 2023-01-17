@@ -6,3 +6,7 @@ DEBUG = True
 SIMPLE_JWT.update(
     {"ACCESS_TOKEN_LIFETIME": timedelta(days=7)},
 )
+
+CORS_ALLOWED_ORIGINS += [
+    "https://dev.githance.com",
+]

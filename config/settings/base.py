@@ -8,7 +8,6 @@ env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
 # https://docs.djangoproject.com/en/3.2/ref/settings/#secret-key
 SECRET_KEY = env.str(
     "DJANGO_SECRET_KEY",
@@ -21,6 +20,12 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", []) + ["localhost", "127.0.0.1"]
 
+# https://pypi.org/project/django-cors-headers/
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "https://githance.com",
+]
 
 DJANGO_APPS = [
     "django.contrib.sites",
@@ -42,6 +47,7 @@ THIRD_PARTY_APPS = [
     # general apps
     "rest_framework",
     "drf_spectacular",
+    "corsheaders",
 ]
 LOCAL_APPS = [
     "apps.users",
@@ -55,6 +61,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -93,10 +100,10 @@ DATABASES = {
     }
 }
 
-db_engine = env.str("DB_ENGINE", None)
-if db_engine:
+DB_ENGINE = env.str("DB_ENGINE", None)
+if DB_ENGINE:
     DATABASES["default"] = {
-        "ENGINE": db_engine,
+        "ENGINE": DB_ENGINE,
         "NAME": env.str("POSTGRES_DB"),
         "USER": env.str("POSTGRES_USER"),
         "PASSWORD": env.str("POSTGRES_PASSWORD"),
@@ -198,9 +205,9 @@ SOCIALACCOUNT_ADAPTER = "apps.authentication.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            "client_id": "1000575426539-46q4dr57cr4hq4v2s648rfqie23ddjs9.apps.googleusercontent.com",
-            "secret": "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",
-            "key": "",
+            "client_id": env.str("DJANGO_GOOGLE_CLIENT_ID"),
+            "secret": env.str("DJANGO_GOOGLE_SECRET"),
+            "key": env.str("DJANGO_GOOGLE_KEY", ""),
         },
         "VERIFIED_EMAIL": True,
     }
@@ -218,19 +225,13 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 # ------------------------------------ OpenAPI ---------------------------------------
+
+# https://drf-spectacular.readthedocs.io/en/latest/settings.html
 SPECTACULAR_SETTINGS = {
     "TITLE": "Githance API",
     "DESCRIPTION": "",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "REDOC_UI_SETTINGS": {"sideNavStyle": "path-only"},
-    # TODO
-    # "AUTHENTICATION_WHITELIST": ['rest_framework_simplejwt.authentication.JWTAuthentication'],
-    # "SERVE_AUTHENTICATION": ['rest_framework.authentication.TokenAuthentication'],
-    # 'DISABLE_ERRORS_AND_WARNINGS': True,
-    "OAUTH2_FLOWS": ["authorizationCode"],
-    "OAUTH2_AUTHORIZATION_URL": "http://localhost:8000/api/v1/auth/login/",
-    "OAUTH2_TOKEN_URL": None,
-    "OAUTH2_REFRESH_URL": None,
-    "OAUTH2_SCOPES": None,
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]/",
 }

@@ -73,7 +73,16 @@ dummy_front_urls = [
     ),
 ]
 
+
+urls = [
+    path("", include(main_urls)),
+    path("", include(social_urls)),
+]
+
+auth_urls = [
+    path("auth/", include(urls)),
+]
+
 urlpatterns = [
-    path("v1/auth/", include(main_urls)),
-    path("v1/auth/", include(social_urls)),
+    path("v1/", include(auth_urls)),
 ]

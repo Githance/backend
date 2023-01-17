@@ -6,10 +6,11 @@ psycopg2-binary = "^2.9.3"
 gunicorn = "^20.1.0"
 environs = "^9.5.0"
 django-filter = "^22.1"
-dj-rest-auth = "^2.2.6"
+dj-rest-auth = "^2.2.7"
 django-allauth = "^0.52.0"
 djangorestframework-simplejwt = "^5.2.2"
 drf-spectacular = "0.25.1"
+django-cors-headers = "^3.13.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0"

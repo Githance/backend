@@ -7,30 +7,29 @@ from drf_spectacular.views import (
 )
 
 from apps.authentication.urls import dummy_front_urls as auth_dummy_urls
-from apps.authentication.urls import urlpatterns as v1_auth_urls
 
-api_urls = [
-    path("api/", include(v1_auth_urls)),
+apps_urls = [
+    path("", include("apps.authentication.urls")),
 ]
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-]
-
-urlpatterns += api_urls
-urlpatterns += auth_dummy_urls
-
-urlpatterns += [
-    # endpoint to download yaml file with schema
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+openapi_urls = [
+    path("", SpectacularAPIView.as_view(api_version="v2"), name="schema"),
     path(
-        "api/schema/swagger-ui/",
+        "swagger-ui/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "api/schema/redoc/",
+        "redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+]
+
+urlpatterns = []
+urlpatterns += [
+    path("admin/", admin.site.urls),
+    path("api/", include(apps_urls)),
+    path("api/v1/schema/", include(openapi_urls)),
+    path("", include(auth_dummy_urls)),
 ]
