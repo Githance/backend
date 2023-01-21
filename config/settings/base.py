@@ -21,11 +21,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", []) + ["localhost", "127.0.0.1"]
 
 # https://pypi.org/project/django-cors-headers/
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "https://githance.com",
-]
+CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", [])
 
 DJANGO_APPS = [
     "django.contrib.sites",

@@ -47,7 +47,7 @@ class SocialLoginView(APIView):
             self.adapter_class, OAuth2Adapter
         ), f"adapter_class is not assigned or incorrect in {self.__class__} ."
 
-    def get_redirect_url(self):
+    def _get_redirect_url(self):
         url = self.request.build_absolute_uri(reverse(self.provider.id + "_callback"))
         return url
 
@@ -59,7 +59,7 @@ class SocialLoginView(APIView):
         params = {
             "response_type": "code",
             "client_id": client_id,
-            "redirect_uri": self.get_redirect_url(),
+            "redirect_uri": self._get_redirect_url(),
             "scope": self.delimiter.join(set(scope)),
         }
         params.update(self.extra_params)
