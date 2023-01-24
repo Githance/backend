@@ -1,0 +1,54 @@
+version: '3.8'
+
+volumes:
+  githance_db_dev:
+  static_value_dev:
+  media_value_dev:
+
+networks:
+  dev_private_network:
+    name: private_network_dev
+    external: true
+  nginx_network:
+    name: nginx_network
+    external: true
+
+services:
+  db:
+    image: postgres:13.9
+    restart: always
+    container_name: db_dev
+    volumes:
+      - githance_db_dev:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    networks:
+      - private_network_dev
+
+  backend:
+    container_name: backend_dev
+    image: "${IMAGE_BACK}:${IMAGE_BACK_TAG}"
+    restart: always
+    volumes:
+      - static_value_dev:/app/apps/staticfiles/
+      - media_value_dev:/app/apps/media/
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+    networks:
+      - private_network_dev
+      - nginx_network
+
+  nginx:
+    image: nginx:1.22.1-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_value_dev:/var/html/static/
+      - media_value_dev:/var/html/media/
+    depends_on:
+      - backend
+    networks:
+      - nginx_network
