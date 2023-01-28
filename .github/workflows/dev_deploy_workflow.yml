@@ -96,7 +96,6 @@ jobs:
             script: |
               cd $DEPLOY_PATH
               
-              # GitHub variables
               echo "IMAGE_BACK=$IMAGE_NAME" > .github_vars
               echo "IMAGE_BACK_TAG=$IMAGE_TAG" >> .github_vars
 #              echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
