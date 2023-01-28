@@ -95,17 +95,15 @@ jobs:
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             script: |
               cd $DEPLOY_PATH
-              
               echo "IMAGE_BACK=$IMAGE_NAME" > .github_vars
               echo "IMAGE_BACK_TAG=$IMAGE_TAG" >> .github_vars
-#              echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
-#              echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
-#              echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
-#              echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
-#              echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
-
+              # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
+              # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
+              # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
+              # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
+              # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
               docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull backend
-#              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull db
+              # docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull db
               docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars down
               docker-compose rm $BACK_HOST
               rm .env
