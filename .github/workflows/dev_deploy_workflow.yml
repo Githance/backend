@@ -68,7 +68,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
-            $IMAGE_TAG
+            ${{ env.IMAGE_TAG }}
 
   deploy:
       runs-on: ubuntu-latest
@@ -96,7 +96,7 @@ jobs:
             script: |
               cd $DEPLOY_PATH
               echo "IMAGE_BACK=$IMAGE_NAME" > .github_vars
-              echo "IMAGE_BACK_TAG=$IMAGE_TAG" >> .github_vars
+              echo "IMAGE_BACK_TAG=${{ env.IMAGE_TAG }}" >> .github_vars
               # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
               # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
               # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
