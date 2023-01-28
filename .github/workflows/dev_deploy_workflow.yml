@@ -9,6 +9,10 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: githance_backend
   DEPLOY_PATH: /GITHANCE
+  DB_ENGINE: django.db.backends.postgresql
+  DB_HOST: db_dev
+  DB_PORT: 5432
+  BACK_HOST: backend_dev
 
 jobs:
   tests:
@@ -65,31 +69,45 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
             ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-#  deploy:
-#      runs-on: ubuntu-latest
-#      needs:
-#        - build-and-push-image-to-github-packages
-#      steps:
-#        - name: executing remote ssh commands to deploy
-#          uses: appleboy/ssh-action@master
-#          with:
-#            host: ${{ secrets.HOST }}
-#            username: ${{ secrets.USER }}
-#            key: ${{ secrets.SSH_KEY }}
-#            passphrase: ${{ secrets.PASSPHRASE }}
-#            script: |
-#              docker-compose stop
-#              docker-compose rm web
-#              rm .env
-#              touch .env
-#              echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
-#              echo CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }} >> .env
-#              echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
-#              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-#              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-#              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-#              echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-#              echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-#              docker-compose up -d
-#              docker-compose exec -T backend python manage.py migrate
-#              docker-compose exec -T backend python manage.py collectstatic --no-input
+  deploy:
+      runs-on: ubuntu-latest
+      needs:
+        - build-and-push-image-to-github-packages
+      environment:
+        name: dev_deploy
+      steps:
+        -
+          name: Create folder for application
+          run: ssh ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }} mkdir -p $DEPLOY_PATH
+        -
+          name: Copy infra files
+          run: |
+            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+        -
+          name: executing remote ssh commands to deploy
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SRV_HOST }}
+            username: ${{ secrets.SRV_USER }}
+            key: ${{ secrets.SRV_SSH_KEY }}
+            passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
+            script: |
+              docker-compose stop
+              docker-compose rm backend_dev
+              rm .env
+              touch .env
+              echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
+              echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
+              echo DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }} >> .env
+              echo DB_ENGINE=$DB_ENGINE >> .env
+              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+              echo DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }} >> .env
+              echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
+              echo DB_HOST=$DB_HOST >> .env
+              echo DB_PORT=$DB_PORT >> .env
+              docker-compose up -d
+              docker-compose exec -T $BACK_HOST python manage.py migrate
+              docker-compose exec -T $BACK_HOST python manage.py collectstatic --no-input
