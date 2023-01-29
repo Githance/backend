@@ -129,7 +129,7 @@ jobs:
               #docker network rm private_network_dev
               docker network create nginx_network || true
               docker network create private_network_dev || true
-              docker compose rm $BACK_HOST
+              docker compose rm ${{ env.BACK_HOST }}
               docker compose up -d
               docker compose exec -T $BACK_HOST python manage.py migrate
               docker compose exec -T $BACK_HOST python manage.py collectstatic --no-input
