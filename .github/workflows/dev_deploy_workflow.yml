@@ -1,136 +1,136 @@
-name: dev.githance workflow
-
-on:
-  push:
-    branches:
-      - feature/deploy
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: githance_backend
-  DEPLOY_PATH: /GITHANCE
-  DB_ENGINE: django.db.backends.postgresql
-  DB_HOST: db_dev
-  DB_PORT: 5432
-  BACK_HOST: backend_dev
-
-jobs:
-#  tests:
+#name: dev.githance workflow
+#
+#on:
+#  push:
+#    branches:
+#      - feature/deploy
+#
+#env:
+#  REGISTRY: ghcr.io
+#  IMAGE_NAME: githance_backend
+#  DEPLOY_PATH: /GITHANCE
+#  DB_ENGINE: django.db.backends.postgresql
+#  DB_HOST: db_dev
+#  DB_PORT: 5432
+#  BACK_HOST: backend_dev
+#
+#jobs:
+##  tests:
+##    runs-on: ubuntu-latest
+##
+##    steps:
+##    - uses: actions/checkout@v2
+##    - name: Set up Python
+##      uses: actions/setup-python@v2
+##      with:
+##        python-version: 3.10.5
+##
+##    - name: Install dependencies
+##      run: |
+##        python -m pip install --upgrade pip
+##        pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
+##        pip install -r requirements.txt
+##
+##    - name: Test with flake8
+##      run: |
+##        python -m flake8
+#
+#  build-and-push-image-to-github-packages:
+#    name: Push Docker image to GitHub Packages
 #    runs-on: ubuntu-latest
-#
+#    # needs: tests
+#    permissions:
+#      contents: read
+#      packages: write
 #    steps:
-#    - uses: actions/checkout@v2
-#    - name: Set up Python
-#      uses: actions/setup-python@v2
-#      with:
-#        python-version: 3.10.5
+#      -
+#        name: Checkout
+#        uses: actions/checkout@v2
+#      -
+#        name: Docker login
+#        uses: docker/login-action@v1
+#        with:
+#          registry: ${{ env.REGISTRY }}
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#      -
+#        name: Set variables
+#        run: |
+#          echo REP_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+#      -
+#        name: Build and push
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: .
+#          file: Dockerfile
+#          labels: runnumber=${GITHUB_RUN_ID}
+#          push: true
+#          tags: |
+#            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
+#            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 #
-#    - name: Install dependencies
-#      run: |
-#        python -m pip install --upgrade pip
-#        pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
-#        pip install -r requirements.txt
+#  deploy:
+#      runs-on: ubuntu-latest
+#      needs:
+#        - build-and-push-image-to-github-packages
+#      environment:
+#        name: dev_deploy
+#      steps:
+##        -
+##          name: Create SSH key
+##          run: |
+##            mkdir -p ~/.ssh
+##            chmod 700 ~/.ssh
+##            echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+##            chmod 644 ~/.ssh/known_hosts
+##            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+##            chmod 600 ~/.ssh/id_rsa
+##        -
+##          name: Create folder for application
+##          run: ssh ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }} mkdir -p $DEPLOY_PATH
+##        -
+##          name: Copy infra files
+##          run: |
+##            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+##            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+#        -
+#          name: executing remote ssh commands to deploy
+#          uses: appleboy/ssh-action@master
+#          with:
+#            host: ${{ secrets.SRV_HOST }}
+#            username: ${{ secrets.SRV_USER }}
+#            key: ${{ secrets.SRV_SSH_KEY }}
+#            passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
+#            script: |
+#              cd $DEPLOY_PATH
+#              echo "IMAGE_BACK=$IMAGE_NAME" > .github_vars
+#              echo "IMAGE_BACK_TAG=${{ env.IMAGE_TAG }}" >> .github_vars
+#              # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
+#              # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
+#              # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
+#              # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
+#              # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
+#              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull backend
+#              # docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull db
+#              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars down
+#              docker-compose rm $BACK_HOST
+#              rm .env
+#              touch .env
+#              echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
+#              echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
+#              echo DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }} >> .env
+#              echo DB_ENGINE=$DB_ENGINE >> .env
+#              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+#              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+#              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+#              echo DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }} >> .env
+#              echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
+#              echo DB_HOST=$DB_HOST >> .env
+#              echo DB_PORT=$DB_PORT >> .env
 #
-#    - name: Test with flake8
-#      run: |
-#        python -m flake8
-
-  build-and-push-image-to-github-packages:
-    name: Push Docker image to GitHub Packages
-    runs-on: ubuntu-latest
-    # needs: tests
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: Docker login
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Set variables
-        run: |
-          echo REP_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: Dockerfile
-          labels: runnumber=${GITHUB_RUN_ID}
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-  deploy:
-      runs-on: ubuntu-latest
-      needs:
-        - build-and-push-image-to-github-packages
-      environment:
-        name: dev_deploy
-      steps:
-#        -
-#          name: Create SSH key
-#          run: |
-#            mkdir -p ~/.ssh
-#            chmod 700 ~/.ssh
-#            echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-#            chmod 644 ~/.ssh/known_hosts
-#            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-#            chmod 600 ~/.ssh/id_rsa
-#        -
-#          name: Create folder for application
-#          run: ssh ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }} mkdir -p $DEPLOY_PATH
-#        -
-#          name: Copy infra files
-#          run: |
-#            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
-#            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
-        -
-          name: executing remote ssh commands to deploy
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.SRV_HOST }}
-            username: ${{ secrets.SRV_USER }}
-            key: ${{ secrets.SRV_SSH_KEY }}
-            passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
-            script: |
-              cd $DEPLOY_PATH
-              echo "IMAGE_BACK=$IMAGE_NAME" > .github_vars
-              echo "IMAGE_BACK_TAG=${{ env.IMAGE_TAG }}" >> .github_vars
-              # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
-              # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
-              # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
-              # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
-              # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
-              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull backend
-              # docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull db
-              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars down
-              docker-compose rm $BACK_HOST
-              rm .env
-              touch .env
-              echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
-              echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
-              echo DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }} >> .env
-              echo DB_ENGINE=$DB_ENGINE >> .env
-              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-              echo DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }} >> .env
-              echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
-              echo DB_HOST=$DB_HOST >> .env
-              echo DB_PORT=$DB_PORT >> .env
-                      
-              docker network create nginx_network || true
-              docker network create private_network_dev || true
-
-              docker-compose up -d
-              docker-compose exec -T $BACK_HOST python manage.py migrate
-              docker-compose exec -T $BACK_HOST python manage.py collectstatic --no-input
+#              docker network create nginx_network || true
+#              docker network create private_network_dev || true
+#
+#              docker-compose up -d
+#              docker-compose exec -T $BACK_HOST python manage.py migrate
+#              docker-compose exec -T $BACK_HOST python manage.py collectstatic --no-input
