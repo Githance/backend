@@ -76,23 +76,23 @@ jobs:
       environment:
         name: dev_deploy
       steps:
-        -
-          name: Create SSH key
-          run: |
-            mkdir -p ~/.ssh
-            chmod 700 ~/.ssh
-            echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-            chmod 644 ~/.ssh/known_hosts
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
-        -
-          name: Create folder for application
-          run: ssh ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }} mkdir -p $DEPLOY_PATH
-        -
-          name: Copy infra files
-          run: |
-            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
-            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+#        -
+#          name: Create SSH key
+#          run: |
+#            mkdir -p ~/.ssh
+#            chmod 700 ~/.ssh
+#            echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+#            chmod 644 ~/.ssh/known_hosts
+#            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#            chmod 600 ~/.ssh/id_rsa
+#        -
+#          name: Create folder for application
+#          run: ssh ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }} mkdir -p $DEPLOY_PATH
+#        -
+#          name: Copy infra files
+#          run: |
+#            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+#            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
         -
           name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
@@ -105,32 +105,33 @@ jobs:
               cd $DEPLOY_PATH
               echo "IMAGE_BACK=$IMAGE_NAME" > .github_vars
               echo "IMAGE_BACK_TAG=${{ github.sha }}" >> .github_vars
-              # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
-              # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
-              # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
-              # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
-              # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
-              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull backend
-              # docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull db
-              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars down
-              docker-compose rm $BACK_HOST
-              rm .env
-              touch .env
-              echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
-              echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
-              echo DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }} >> .env
-              echo DB_ENGINE=$DB_ENGINE >> .env
-              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-              echo DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }} >> .env
-              echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
-              echo DB_HOST=$DB_HOST >> .env
-              echo DB_PORT=$DB_PORT >> .env
-
-              docker network create nginx_network || true
-              docker network create private_network_dev || true
-
-              docker-compose up -d
-              docker-compose exec -T $BACK_HOST python manage.py migrate
-              docker-compose exec -T $BACK_HOST python manage.py collectstatic --no-input
+              cat .github_vars
+#              # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
+#              # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
+#              # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
+#              # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
+#              # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
+#              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull backend
+#              # docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars pull db
+#              docker-compose -f docker-compose_dev.yaml --env-file $DEPLOY_PATH/.github_vars down
+#              docker-compose rm $BACK_HOST
+#              rm .env
+#              touch .env
+#              echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
+#              echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
+#              echo DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }} >> .env
+#              echo DB_ENGINE=$DB_ENGINE >> .env
+#              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+#              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+#              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+#              echo DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }} >> .env
+#              echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
+#              echo DB_HOST=$DB_HOST >> .env
+#              echo DB_PORT=$DB_PORT >> .env
+#
+#              docker network create nginx_network || true
+#              docker network create private_network_dev || true
+#
+#              docker-compose up -d
+#              docker-compose exec -T $BACK_HOST python manage.py migrate
+#              docker-compose exec -T $BACK_HOST python manage.py collectstatic --no-input
