@@ -101,7 +101,7 @@ jobs:
             key: ${{ secrets.SRV_SSH_KEY }}
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             source: "infra/test/docker-compose_dev.yaml,infra/nginx/srv.conf"
-            target: ${{ env.$DEPLOY_PATH }}
+            target: ${{ env.DEPLOY_PATH }}
         -
           name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
@@ -111,7 +111,7 @@ jobs:
             key: ${{ secrets.SRV_SSH_KEY }}
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             script: |
-              cd ${{ env.$DEPLOY_PATH }}
+              cd ${{ env.DEPLOY_PATH }}
               echo "IMAGE_BACK=${{ env.IMAGE_NAME }}" > .github_vars
               echo "IMAGE_BACK_TAG=${{ github.sha }}" >> .github_vars
               cat .github_vars
