@@ -125,8 +125,8 @@ jobs:
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull backend
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull db
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
-              docker network rm nginx_network
-              docker network rm private_network_dev
+              #docker network rm nginx_network
+              #docker network rm private_network_dev
               docker network create nginx_network || true
               docker network create private_network_dev || true
               docker compose rm $BACK_HOST
