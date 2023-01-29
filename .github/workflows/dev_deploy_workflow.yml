@@ -35,44 +35,44 @@ jobs:
 #      run: |
 #        python -m flake8
 
-  build-and-push-image-to-github-packages:
-    name: Push Docker image to GitHub Packages
-    runs-on: ubuntu-latest
-    # needs: tests
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: Docker login
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Set variables
-        run: |
-          echo REP_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: Dockerfile
-          labels: runnumber=${GITHUB_RUN_ID}
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+#  build-and-push-image-to-github-packages:
+#    name: Push Docker image to GitHub Packages
+#    runs-on: ubuntu-latest
+#    # needs: tests
+#    permissions:
+#      contents: read
+#      packages: write
+#    steps:
+#      -
+#        name: Checkout
+#        uses: actions/checkout@v2
+#      -
+#        name: Docker login
+#        uses: docker/login-action@v1
+#        with:
+#          registry: ${{ env.REGISTRY }}
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#      -
+#        name: Set variables
+#        run: |
+#          echo REP_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+#      -
+#        name: Build and push
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: .
+#          file: Dockerfile
+#          labels: runnumber=${GITHUB_RUN_ID}
+#          push: true
+#          tags: |
+#            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
+#            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
   deploy:
       runs-on: ubuntu-latest
-      needs:
-        - build-and-push-image-to-github-packages
+#      needs:
+#        - build-and-push-image-to-github-packages
       environment:
         name: dev_deploy
       steps:
@@ -101,7 +101,7 @@ jobs:
             key: ${{ secrets.SRV_SSH_KEY }}
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             source: "infra/nginx/default.conf"
-            target: ${{ env.DEPLOY_PATH }}
+            target: "GITHANCE" # ${{ env.DEPLOY_PATH }}
         -
           name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
