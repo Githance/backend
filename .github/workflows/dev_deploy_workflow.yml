@@ -101,7 +101,7 @@ jobs:
             key: ${{ secrets.SRV_SSH_KEY }}
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             source: "infra/nginx/default.conf"
-            target: "GITHANCE" # ${{ env.DEPLOY_PATH }}
+            target: "~/GITHANCE" # ${{ env.DEPLOY_PATH }}
         -
           name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
