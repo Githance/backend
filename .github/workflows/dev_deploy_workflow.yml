@@ -96,7 +96,7 @@ jobs:
         - name: where am i
           run: |
             pwd
-            ls -la
+            sudo ls -la
             cd ..
             ls -la
         - name: copy file via ssh key
