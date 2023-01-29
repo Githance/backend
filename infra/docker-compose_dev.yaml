@@ -45,7 +45,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./srv.conf:/etc/nginx/conf.d/default.conf
+      - .nginx/srv.conf:/etc/nginx/conf.d/default.conf
       - static_value_dev:/var/html/static/
       - media_value_dev:/var/html/media/
     depends_on:
