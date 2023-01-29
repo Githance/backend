@@ -93,7 +93,7 @@ jobs:
 #          run: |
 #            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
 #            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
-#        -
+        -
           name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
           with:
