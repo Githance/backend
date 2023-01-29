@@ -98,7 +98,18 @@ jobs:
             pwd
             sudo ls -la
             cd ..
-            ls -la
+            pwd
+            sudo ls -la
+            cd ..
+            pwd
+            sudo ls -la
+            cd ..
+            pwd
+            sudo ls -la
+            cd ..
+            pwd
+            sudo ls -la
+
         - name: copy file via ssh key
           uses: appleboy/scp-action@master
           with:
