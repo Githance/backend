@@ -6,7 +6,7 @@ volumes:
   media_value_dev:
 
 networks:
-  dev_private_network:
+  private_network_dev:
     name: private_network_dev
     external: true
   nginx_network:
