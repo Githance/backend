@@ -97,22 +97,6 @@ jobs:
 #          run: |
 #            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
 #            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
-        - name: where am i
-          run: |
-            pwd
-            sudo ls -la
-            cd ..
-            pwd
-            sudo ls -la
-            cd ..
-            pwd
-            sudo ls -la
-            cd ..
-            pwd
-            sudo ls -la
-            cd ..
-            pwd
-            sudo ls -la
 
         - name: copy file via ssh key
           uses: appleboy/scp-action@master
@@ -121,7 +105,8 @@ jobs:
             username: ${{ secrets.SRV_USER }}
             key: ${{ secrets.SRV_SSH_KEY }}
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
-            source: infra/nginx/default.conf
+            rm: true
+            source: "infra/nginx/srv.conf,infra/docker-compose_dev.yaml"
             target: "~/GITHANCE" # ${{ env.DEPLOY_PATH }}
         -
           name: executing remote ssh commands to deploy
