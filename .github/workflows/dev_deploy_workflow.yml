@@ -76,24 +76,24 @@ jobs:
       environment:
         name: dev_deploy
       steps:
-        -
-          name: Create SSH key
-          run: |
-            mkdir -p ~/.ssh
-            chmod 700 ~/.ssh
-            echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-            chmod 644 ~/.ssh/known_hosts
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
-        -
-          name: Create folder for application
-          run: ssh ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }} mkdir -p $DEPLOY_PATH
-        -
-          name: Copy infra files
-          run: |
-            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
-            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
-        -
+#        -
+#          name: Create SSH key
+#          run: |
+#            mkdir -p ~/.ssh
+#            chmod 700 ~/.ssh
+#            echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+#            chmod 644 ~/.ssh/known_hosts
+#            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#            chmod 600 ~/.ssh/id_rsa
+#        -
+#          name: Create folder for application
+#          run: ssh ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }} mkdir -p $DEPLOY_PATH
+#        -
+#          name: Copy infra files
+#          run: |
+#            scp infra/test/docker-compose_dev.yaml ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+#            scp infra/nginx/srv.conf ${{ secrets.SRV_USER }}@${{ secrets.SRV_HOST }}:$DEPLOY_PATH
+#        -
           name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
           with:
