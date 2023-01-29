@@ -13,13 +13,13 @@ jobs:
         name: dev_deploy
       steps:
         - name: executing remote ssh commands using ssh key
-          uses: appleboy/ssh-action@v0.1.7
+          #uses: appleboy/ssh-action@v0.1.7
           run: |
             echo ${{ secrets.SRV_HOST }}
             echo ${{ secrets.SRV_USER }}
-          with:
-            host: ${{ secrets.SRV_HOST }}
-            username: ${{ secrets.SRV_USER }}
-            key: ${{ secrets.SRV_SSH_KEY }}
-            passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
-            script: whoami
+#          with:
+#            host: ${{ secrets.SRV_HOST }}
+#            username: ${{ secrets.SRV_USER }}
+#            key: ${{ secrets.SRV_SSH_KEY }}
+#            passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
+#            script: whoami
