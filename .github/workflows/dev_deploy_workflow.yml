@@ -106,8 +106,10 @@ jobs:
             key: ${{ secrets.SRV_SSH_KEY }}
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             rm: true
+            strip_components: 1
             source: "infra/nginx/srv.conf,infra/docker-compose_dev.yaml"
-            target: "~/GITHANCE" # ${{ env.DEPLOY_PATH }}
+            target: ${{ env.DEPLOY_PATH }}
+
         -
           name: executing remote ssh commands to deploy
           uses: appleboy/ssh-action@master
