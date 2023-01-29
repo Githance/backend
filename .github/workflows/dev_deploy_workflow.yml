@@ -97,6 +97,8 @@ jobs:
           run: |
             pwd
             ls -la
+            cd ..
+            ls -la
         - name: copy file via ssh key
           uses: appleboy/scp-action@master
           with:
