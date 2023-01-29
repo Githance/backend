@@ -119,17 +119,14 @@ jobs:
               echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
               echo DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }} >> .env
               echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
-              echo DB_HOST=$DB_HOST >> .env
-              echo DB_PORT=$DB_PORT >> .env
+              echo DB_HOST=${{ env.DB_HOST }} >> .env
+              echo DB_PORT=${{ env.DB_PORT }} >> .env
+              docker network create nginx_network || true
+              docker network create private_network_dev || true
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull backend
-              # docker compose -f docker-compose_dev.yaml --env-file .github_vars pull db
+              docker compose -f docker-compose_dev.yaml --env-file .github_vars pull db
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
-              # docker compose rm $BACK_HOST
-
-
-#              docker network create nginx_network || true
-#              docker network create private_network_dev || true
-#
-#              docker compose up -d
-#              docker compose exec -T $BACK_HOST python manage.py migrate
-#              docker compose exec -T $BACK_HOST python manage.py collectstatic --no-input
+              docker compose rm $BACK_HOST
+              docker compose up -d
+              docker compose exec -T $BACK_HOST python manage.py migrate
+              docker compose exec -T $BACK_HOST python manage.py collectstatic --no-input
