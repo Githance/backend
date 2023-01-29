@@ -107,10 +107,6 @@ jobs:
               # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
               # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
               # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
-              docker-compose -f docker-compose_dev.yaml --env-file .github_vars pull backend
-              # docker-compose -f docker-compose_dev.yaml --env-file .github_vars pull db
-              docker-compose -f docker-compose_dev.yaml --env-file .github_vars down
-              # docker-compose rm $BACK_HOST
               # rm .env
               # touch .env
               echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
@@ -124,10 +120,15 @@ jobs:
               echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
               echo DB_HOST=$DB_HOST >> .env
               echo DB_PORT=$DB_PORT >> .env
+              docker compose -f docker-compose_dev.yaml --env-file .github_vars pull backend
+              # docker compose -f docker-compose_dev.yaml --env-file .github_vars pull db
+              docker compose -f docker-compose_dev.yaml --env-file .github_vars down
+              # docker compose rm $BACK_HOST
+
 
 #              docker network create nginx_network || true
 #              docker network create private_network_dev || true
 #
-#              docker-compose up -d
-#              docker-compose exec -T $BACK_HOST python manage.py migrate
-#              docker-compose exec -T $BACK_HOST python manage.py collectstatic --no-input
+#              docker compose up -d
+#              docker compose exec -T $BACK_HOST python manage.py migrate
+#              docker compose exec -T $BACK_HOST python manage.py collectstatic --no-input
