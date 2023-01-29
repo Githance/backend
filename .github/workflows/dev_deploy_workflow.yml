@@ -111,21 +111,22 @@ jobs:
               # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
               # rm .env
               # touch .env
-              echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
-              echo DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} >> .env
-              echo DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }} >> .env
-              echo DB_ENGINE=$DB_ENGINE >> .env
-              echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-              echo DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }} >> .env
-              echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
-              echo DB_HOST=${{ env.DB_HOST }} >> .env
-              echo DB_PORT=${{ env.DB_PORT }} >> .env
+              echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
+              echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
+              echo "DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }}" >> .env
+              echo "DB_ENGINE=${{ env.DB_ENGINE }}" >> .env
+              echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+              echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+              echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+              echo "DJANGO_GOOGLE_CLIENT_ID=${{ secrets.DJANGO_GOOGLE_CLIENT_ID }}" >> .env
+              echo "DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }}" >> .env
+              echo "DB_HOST=${{ env.DB_HOST }}" >> .env
+              echo "DB_PORT=${{ env.DB_PORT }}" >> .env
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull backend
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull db
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
-              docker network prune || true
+              docker network rm nginx_network
+              docker network rm private_network_dev
               docker network create nginx_network || true
               docker network create private_network_dev || true
               docker compose rm $BACK_HOST
