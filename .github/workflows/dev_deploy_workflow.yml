@@ -100,8 +100,10 @@ jobs:
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             script: |
               cd ${{ env.DEPLOY_PATH }}
-              echo "IMAGE_BACK=${{ env.IMAGE_NAME }}" > .github_vars
-              echo "IMAGE_BACK_TAG=${{ github.sha }}" >> .github_vars
+              # echo "IMAGE_BACK=${{ env.IMAGE_NAME }}" > .github_vars
+              # echo "IMAGE_BACK_TAG=${{ github.sha }}" >> .github_vars
+              echo "IMAGE_BACK=ghcr.io/ridmel/githance_backend" > .github_vars
+              echo "IMAGE_BACK_TAG=dev" >> .github_vars
               # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
               # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
               # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
@@ -120,11 +122,12 @@ jobs:
               echo DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }} >> .env
               echo DB_HOST=${{ env.DB_HOST }} >> .env
               echo DB_PORT=${{ env.DB_PORT }} >> .env
-              docker network create nginx_network || true
-              docker network create private_network_dev || true
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull backend
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull db
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
+              docker network prune || true
+              docker network create nginx_network || true
+              docker network create private_network_dev || true
               docker compose rm $BACK_HOST
               docker compose up -d
               docker compose exec -T $BACK_HOST python manage.py migrate
