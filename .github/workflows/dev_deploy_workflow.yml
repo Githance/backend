@@ -100,7 +100,7 @@ jobs:
             username: ${{ secrets.SRV_USER }}
             key: ${{ secrets.SRV_SSH_KEY }}
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
-            source: "infra/nginx/default.conf"
+            source: infra/nginx/default.conf
             target: "~/GITHANCE" # ${{ env.DEPLOY_PATH }}
         -
           name: executing remote ssh commands to deploy
