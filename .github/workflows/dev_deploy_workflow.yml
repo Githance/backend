@@ -127,9 +127,9 @@ jobs:
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
               #docker network rm nginx_network
               #docker network rm private_network_dev
-              docker network create nginx_network || true
-              docker network create private_network_dev || true
-              docker compose rm ${{ env.BACK_HOST }}
+              #docker network create nginx_network || true
+              #docker network create private_network_dev || true
+              #docker compose rm ${{ env.BACK_HOST }}
               docker compose up -d
               docker compose exec -T $BACK_HOST python manage.py migrate
               docker compose exec -T $BACK_HOST python manage.py collectstatic --no-input
