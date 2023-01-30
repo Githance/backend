@@ -130,5 +130,5 @@ jobs:
               #docker network create private_network_dev || true
               docker compose -f docker-compose_dev.yaml --env-file .github_vars rm ${{ env.BACK_HOST }}
               docker compose -f docker-compose_dev.yaml --env-file .github_vars up -d
-              docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T ${{ env.BACK_HOST }} python manage.py migrate
-              docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T ${{ env.BACK_HOST }} python manage.py collectstatic --no-input
+              docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py migrate
+              docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py collectstatic --no-input
