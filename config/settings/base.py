@@ -193,9 +193,6 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
 }
 
-# https://docs.djangoproject.com/en/3.2/ref/settings/#login-url
-LOGIN_URL = "/auth/login/"
-
 # django-allauth
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
