@@ -187,9 +187,6 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
 }
 
-# https://docs.djangoproject.com/en/3.2/ref/settings/#login-url
-LOGIN_URL = "/auth/login/"
-
 # django-allauth
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -215,10 +212,11 @@ FRONTEND_PASS_RESET_CONFIRM_URL = "auth/password/reset/confirm/"
 
 
 # -------------------------------- SENDING EMAIL -------------------------------------
-
+# TODO
 # https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-EMAIL_BACKEND
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 
 # ------------------------------------ OpenAPI ---------------------------------------
 
@@ -226,8 +224,15 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 SPECTACULAR_SETTINGS = {
     "TITLE": "Githance API",
     "DESCRIPTION": "",
-    "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "REDOC_UI_SETTINGS": {"sideNavStyle": "path-only"},
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]/",
 }
+
+# ------------------------------------ PROXY -----------------------------------------
+
+# https://docs.djangoproject.com/en/3.2/ref/settings/#use-x-forwarded-host
+USE_X_FORWARDED_HOST = True
+
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

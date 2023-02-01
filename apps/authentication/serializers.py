@@ -2,6 +2,9 @@ from dj_rest_auth.jwt_auth import CookieTokenRefreshSerializer
 from dj_rest_auth.registration.serializers import (
     RegisterSerializer as DjRestAuthRegisterSerializer,
 )
+from dj_rest_auth.registration.serializers import (
+    SocialLoginSerializer as DjRestAuthSocialLoginSerializer,
+)
 from dj_rest_auth.serializers import LoginSerializer
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
@@ -32,3 +35,9 @@ class RegisterSerializer(DjRestAuthRegisterSerializer):
 class LoginWithPasswordSerializer(LoginSerializer):
     username = None
     email = serializers.EmailField(required=True)
+
+
+class SocialLoginSerializer(DjRestAuthSocialLoginSerializer):
+    access_token = None
+    id_token = None
+    code = serializers.CharField()
