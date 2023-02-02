@@ -32,8 +32,8 @@ services:
     image: "${IMAGE_BACK}:${IMAGE_BACK_TAG}"
     restart: always
     volumes:
-      - static_value_dev:/app/apps/staticfiles/
-      - media_value_dev:/app/apps/media/
+      - static_value_dev:/code/apps/staticfiles/
+      - media_value_dev:/code/apps/media/
     depends_on:
       - db
     env_file:
@@ -57,7 +57,5 @@ services:
       - /etc/letsencrypt/options-ssl-nginx.conf:/etc/nginx/options-ssl-nginx.conf
       - /etc/letsencrypt/ssl-dhparams.pem:/etc/nginx/certs/ssl-dhparams.pem
       - /etc/letsencrypt/live/githance.com/:/etc/nginx/certs/githance.com/
-    depends_on:
-      - backend
     networks:
       - nginx_network

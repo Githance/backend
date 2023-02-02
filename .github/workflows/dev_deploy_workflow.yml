@@ -34,8 +34,8 @@ jobs:
       run: |
         python -m flake8
 
-  build-and-push-image-to-github-packages:
-    name: Push Docker image to GitHub Packages
+  delivery-new-build:
+    name: Delivery new build
     runs-on: ubuntu-latest
     needs: tests
     permissions:
@@ -57,7 +57,7 @@ jobs:
         run: |
           echo REP_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
       -
-        name: Build and push
+        name: Build image and push to GitHub Packages
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -67,31 +67,26 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
             ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      -
+        name: Copy infra files via ssh
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SRV_HOST }}
+          username: ${{ secrets.SRV_USER }}
+          key: ${{ secrets.SRV_SSH_KEY }}
+          passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
+          source: "infra/nginx/srv.conf,infra/docker-compose_dev.yaml"
+          target: ~/${{ env.DEPLOY_PATH }}
 
   deploy:
       runs-on: ubuntu-latest
       needs:
-        - build-and-push-image-to-github-packages
+        - delivery-new-build
       environment:
         name: dev_deploy
       steps:
         -
-          name: Checkout
-          uses: actions/checkout@v3
-        -
-          name: copy file via ssh key
-          uses: appleboy/scp-action@master
-          with:
-            host: ${{ secrets.SRV_HOST }}
-            username: ${{ secrets.SRV_USER }}
-            key: ${{ secrets.SRV_SSH_KEY }}
-            passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
-            #rm: true
-            strip_components: 1
-            source: "infra/nginx/srv.conf,infra/docker-compose_dev.yaml"
-            target: ~/${{ env.DEPLOY_PATH }}
-        -
-          name: executing remote ssh commands to deploy
+          name: Executing deploy via ssh
           uses: appleboy/ssh-action@master
           with:
             host: ${{ secrets.SRV_HOST }}
@@ -100,6 +95,9 @@ jobs:
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             script: |
               cd ${{ env.DEPLOY_PATH }}
+              cp -r infra/nginx .
+              cp infra/docker-compose_dev.yaml .
+              
               # echo "IMAGE_BACK=${{ env.IMAGE_NAME }}" > .github_vars
               # echo "IMAGE_BACK_TAG=${{ github.sha }}" >> .github_vars
               echo "IMAGE_BACK=ghcr.io/ridmel/githance_backend" > .github_vars
@@ -109,8 +107,7 @@ jobs:
               # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
               # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
               # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
-              # rm .env
-              # touch .env
+
               echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
               echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
               echo "DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }}" >> .env
@@ -122,6 +119,7 @@ jobs:
               echo "DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }}" >> .env
               echo "DB_HOST=${{ env.DB_HOST }}" >> .env
               echo "DB_PORT=${{ env.DB_PORT }}" >> .env
+              
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull
               docker compose -f docker-compose_dev.yaml --env-file .github_vars stop
               #docker network rm nginx_network
