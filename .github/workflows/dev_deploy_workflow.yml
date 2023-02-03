@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: githance_backend
-  DEPLOY_PATH: GITHANCE_DEV
+  DEPLOY_PATH: GITHANCE
   DB_ENGINE: django.db.backends.postgresql
   DB_HOST: db_dev
   DB_PORT: 5432
