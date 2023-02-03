@@ -24,7 +24,7 @@ class RefreshAccessTokenSerializer(CookieTokenRefreshSerializer):
 
 class RegisterSerializer(DjRestAuthRegisterSerializer):
     username = None
-    name = serializers.CharField(required=True, max_length=40, min_length=1)
+    name = serializers.CharField(required=True, max_length=38, min_length=1)
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
@@ -41,3 +41,4 @@ class SocialLoginSerializer(DjRestAuthSocialLoginSerializer):
     access_token = None
     id_token = None
     code = serializers.CharField()
+

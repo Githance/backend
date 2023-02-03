@@ -1,4 +1,5 @@
 from allauth.account import app_settings as account_settings
+from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.utils import user_email, user_field
 from allauth.socialaccount import app_settings
 from allauth.socialaccount.adapter import (
@@ -31,8 +32,24 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         email = data.get("email")
         first_name = data.get("first_name")
         last_name = data.get("last_name")
-        name = " ".join((first_name, last_name)).strip()
+        name = " ".join((first_name, last_name)).strip()[:38]
         user = sociallogin.user
         user_email(user, valid_email_or_none(email) or "")
         user_field(user, "name", name or "Безымянный")
+        return user
+
+
+class AccountAdapter(DefaultAccountAdapter):
+    def save_user(self, request, user, form, commit=True):
+        data = form.cleaned_data
+        email = data.get("email")
+        name = data.get("name")[:38]
+        user_email(user, valid_email_or_none(email) or "")
+        user_field(user, "name", name or "Безымянный")
+        if "password1" in data:
+            user.set_password(data["password1"])
+        else:
+            user.set_unusable_password()
+        if commit:
+            user.save()
         return user

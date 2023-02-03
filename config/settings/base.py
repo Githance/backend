@@ -194,6 +194,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_ADAPTER = "apps.authentication.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "apps.authentication.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -212,11 +213,24 @@ FRONTEND_PASS_RESET_CONFIRM_URL = "auth/password/reset/confirm/"
 
 
 # -------------------------------- SENDING EMAIL -------------------------------------
-# TODO
 # https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-EMAIL_BACKEND
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = env.str("DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host
+EMAIL_HOST = env.str("DJANGO_EMAIL_HOST", "localhost")
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host-user
+EMAIL_HOST_USER = env.str("DJANGO_EMAIL_HOST_USER", "")
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host-password
+EMAIL_HOST_PASSWORD = env.str("DJANGO_EMAIL_HOST_PASSWORD", "")
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-port
+EMAIL_PORT = 465
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-use-ssl
+EMAIL_USE_SSL = True
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-from-email
+DEFAULT_FROM_EMAIL = f"Githance <{EMAIL_HOST_USER}>"
+
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
+
 
 # ------------------------------------ OpenAPI ---------------------------------------
 
