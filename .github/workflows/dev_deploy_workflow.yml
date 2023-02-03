@@ -75,7 +75,8 @@ jobs:
           username: ${{ secrets.SRV_USER }}
           key: ${{ secrets.SRV_SSH_KEY }}
           passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
-          source: "infra/nginx/srv.conf,infra/docker-compose_dev.yaml"
+          source: "infra/deploy_dev/"
+          rm: true
           target: ~/${{ env.DEPLOY_PATH }}
 
   deploy:
@@ -95,8 +96,7 @@ jobs:
             passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
             script: |
               cd ${{ env.DEPLOY_PATH }}
-              cp -r infra/nginx .
-              cp infra/docker-compose_dev.yaml .
+              cp -r infra/deploy_dev/* .
               
               # echo "IMAGE_BACK=${{ env.IMAGE_NAME }}" > .github_vars
               # echo "IMAGE_BACK_TAG=${{ github.sha }}" >> .github_vars
