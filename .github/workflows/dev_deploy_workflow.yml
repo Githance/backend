@@ -76,7 +76,6 @@ jobs:
           key: ${{ secrets.SRV_SSH_KEY }}
           passphrase: ${{ secrets.SRV_SSH_PASSPHRASE }}
           source: "infra/deploy_dev/"
-          rm: true
           target: ~/${{ env.DEPLOY_PATH }}
 
   deploy:
