@@ -107,6 +107,7 @@ jobs:
               # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
               # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
               # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
+              chmod 600 .github_vars
 
               echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
               echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
@@ -119,11 +120,13 @@ jobs:
               echo "DJANGO_GOOGLE_SECRET=${{ secrets.DJANGO_GOOGLE_SECRET }}" >> .env
               echo "DB_HOST=${{ env.DB_HOST }}" >> .env
               echo "DB_PORT=${{ env.DB_PORT }}" >> .env
-              
+              chmod 600 .env
+
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull
               docker compose -f docker-compose_dev.yaml --env-file .github_vars stop
               #docker network rm nginx_network
               #docker network rm private_network_dev
+              # TODO:  при разработке prod nginx_network вынести в прод
               #docker network create nginx_network || true
               #docker network create private_network_dev || true
               docker compose -f docker-compose_dev.yaml --env-file .github_vars rm ${{ env.BACK_HOST }}

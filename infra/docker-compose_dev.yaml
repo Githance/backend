@@ -42,6 +42,7 @@ services:
       - private_network_dev
       - nginx_network
 
+  # TODO:  при разработке prod nginx вынести в прод
   nginx:
     image: nginx:1.22.1-alpine
     ports:
