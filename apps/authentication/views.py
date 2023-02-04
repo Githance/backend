@@ -2,7 +2,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import (
-    SocialLoginView as DjRestAuthSocialLoginCallbackView,
+    SocialLoginView as DjRestAuthSocialLoginView,
 )
 from dj_rest_auth.views import LoginView
 from dj_rest_auth.views import LogoutView as DjRestAuthLogoutView
@@ -27,7 +27,7 @@ def dummy(request):
 
 
 @extend_schema(responses=LoginAccessTokenSerializer)
-class GoogleLoginCallbackView(DjRestAuthSocialLoginCallbackView):
+class GoogleLoginView(DjRestAuthSocialLoginView):
     """
     Entry point to the user with the Google service authentication code.
 

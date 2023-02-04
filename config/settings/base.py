@@ -207,9 +207,14 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# URLs for sending confirmation emails to the frontend.
+
+# -------------------------------- FRONTEND URLS -------------------------------------
+
+# URL paths for sending confirmation emails to the frontend.
 FRONTEND_EMAIL_CONFIRM_URL = "auth/email/confirm/"
 FRONTEND_PASS_RESET_CONFIRM_URL = "auth/password/reset/confirm/"
+# URL to which Google redirects the user
+FRONTEND_GOOGLE_CALLBACK_URL = "auth/google/callback/"
 
 
 # -------------------------------- SENDING EMAIL -------------------------------------

@@ -6,9 +6,9 @@ from dj_rest_auth.registration.serializers import (
     SocialLoginSerializer as DjRestAuthSocialLoginSerializer,
 )
 from dj_rest_auth.serializers import LoginSerializer
+from django.contrib.auth import settings
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
-
 
 class LoginAccessTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
@@ -41,4 +41,9 @@ class SocialLoginSerializer(DjRestAuthSocialLoginSerializer):
     access_token = None
     id_token = None
     code = serializers.CharField()
+
+    def set_callback_url(self, view, adapter_class):
+        origin = view.request.META.get("HTTP_ORIGIN")
+        if origin:
+            self.callback_url = origin + "/" + settings.FRONTEND_GOOGLE_CALLBACK_URL
 
