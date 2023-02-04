@@ -115,7 +115,9 @@ jobs:
               echo "DB_HOST=${{ env.DB_HOST }}" >> .env
               echo "DB_PORT=${{ env.DB_PORT }}" >> .env
               chmod 600 .env
-
-              docker compose -f docker-compose_dev.yaml --env-file .github_vars up --detach --pull always
+              
+              docker compose -f docker-compose_dev.yaml --env-file .github_vars pull 
+              docker compose -f docker-compose_dev.yaml --env-file .github_vars up --detach
+              
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py migrate
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py collectstatic --no-input
