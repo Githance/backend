@@ -28,7 +28,7 @@ openapi_urls = [
 
 urlpatterns = []
 urlpatterns += [
-    path("admin/", admin.site.urls),
+    path("admin2/", admin.site.urls),
     path("api/", include(apps_urls)),
     path("api/schema/", include(openapi_urls)),
     path("", include(auth_dummy_urls)),
