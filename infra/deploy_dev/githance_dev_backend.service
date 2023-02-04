@@ -9,16 +9,16 @@ RestartSec=5
 TimeoutStartSec=1200
 User=gitaction
 
-WorkingDirectory=/GITHANCE/
+WorkingDirectory=/GITHANCE_DEV/
 
 # Remove old containers and networks
-ExecStartPre=docker compose -f docker-compose_dev.yaml --env-file /GITHANCE/.github_vars pull
-ExecStartPre=docker compose -f docker-compose_dev.yaml --env-file /GITHANCE/.github_vars down
+ExecStartPre=docker compose -f docker-compose_dev.yaml --env-file .github_vars pull
+ExecStartPre=docker compose -f docker-compose_dev.yaml --env-file .github_vars down
 
 # Compose up
 ExecStart=docker compose -f docker-compose_dev.yaml --env-file .github_vars up -d
 
 # Compose down
-ExecStop=docker compose -f docker-compose_dev.yaml --env-file /GITHANCE/.github_vars down
+ExecStop=docker compose -f docker-compose_dev.yaml --env-file .github_vars down
 [Install]
 WantedBy=multi-user.target

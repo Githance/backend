@@ -99,15 +99,8 @@ jobs:
               ls --hide=infra | xargs -d '\n' rm -r
               cp -r infra/* .
               
-              # echo "IMAGE_BACK=${{ env.IMAGE_NAME }}" > .github_vars
-              # echo "IMAGE_BACK_TAG=${{ github.sha }}" >> .github_vars
-              echo "IMAGE_BACK=ghcr.io/ridmel/githance_backend" > .github_vars
-              echo "IMAGE_BACK_TAG=dev" >> .github_vars
-              # echo "IMAGE_FRONT=${{ secrets.IMAGE_FRONT }}" >> .github_vars
-              # echo "IMAGE_FRONT_TAG=${{ secrets.IMAGE_FRONT_TAG }}" >> .github_vars
-              # echo "FRONT_BASE_URL=${{ secrets.FRONT_BASE_URL }}" >> .github_vars
-              # echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .github_vars
-              # echo "SUBDOMAIN=${{ secrets.SUBDOMAIN }}" >> .github_vars
+              echo "IMAGE_BACK=${{ vars.IMAGE_BACK }}" > .github_vars
+              echo "IMAGE_BACK_TAG=${{ vars.IMAGE_BACK_TAG }}" >> .github_vars
               chmod 600 .github_vars
 
               echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
@@ -123,14 +116,6 @@ jobs:
               echo "DB_PORT=${{ env.DB_PORT }}" >> .env
               chmod 600 .env
 
-              docker compose -f docker-compose_dev.yaml --env-file .github_vars pull
-              docker compose -f docker-compose_dev.yaml --env-file .github_vars stop
-              #docker network rm nginx_network
-              #docker network rm private_network_dev
-              # TODO:  при разработке prod nginx_network вынести в прод
-              #docker network create nginx_network || true
-              #docker network create private_network_dev || true
-              docker compose -f docker-compose_dev.yaml --env-file .github_vars rm ${{ env.BACK_HOST }}
-              docker compose -f docker-compose_dev.yaml --env-file .github_vars up -d
+              docker compose -f docker-compose_dev.yaml --env-file .github_vars up --detach --pull always
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py migrate
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py collectstatic --no-input
