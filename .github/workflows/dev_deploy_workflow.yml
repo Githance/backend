@@ -121,9 +121,9 @@ jobs:
               mv is_docker_up.sh ~/bin/
               mv githance_dev_backend.service docker_check.service ~/.config/systemd/user/
 
-#              systemctl --user daemon-reload
-#              systemctl --user enable docker_check.service githance_dev_backend.service
-#              systemctl --user restart docker_check.service githance_dev_backend.service
+              # systemctl --user daemon-reload
+              # systemctl --user enable docker_check.service githance_dev_backend.service
+              # systemctl --user restart docker_check.service githance_dev_backend.service
 
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
