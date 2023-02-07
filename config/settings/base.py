@@ -23,6 +23,12 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", []) + ["localhost", "127.0.0.1"
 # https://pypi.org/project/django-cors-headers/
 CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", [])
 
+# https://docs.djangoproject.com/en/3.2/ref/settings/#use-x-forwarded-host
+USE_X_FORWARDED_HOST = True
+
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.admin",
@@ -135,14 +141,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-STATIC_URL = "/static/"
+STATIC_URL = "/staticfiles/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#static-root
 STATIC_ROOT = BASE_DIR / "apps" / "staticfiles"
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#media-url
-MEDIA_URL = "/media/"
+MEDIA_URL = "/mediafiles/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#media-root
-MEDIA_ROOT = BASE_DIR / "apps" / "media"
+MEDIA_ROOT = BASE_DIR / "apps" / "mediafiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -186,9 +192,6 @@ SIMPLE_JWT = {
     # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#rotate-refresh-tokens
     "ROTATE_REFRESH_TOKENS": True,
 }
-
-# https://docs.djangoproject.com/en/3.2/ref/settings/#login-url
-LOGIN_URL = "/auth/login/"
 
 # django-allauth
 # https://django-allauth.readthedocs.io/en/latest/configuration.html

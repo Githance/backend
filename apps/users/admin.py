@@ -1,16 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 admin.site.site_header = "Githance, административная часть"
 admin.site.site_title = "Githance"
-
-# https://django-allauth.readthedocs.io/en/latest/advanced.html#admin
-admin.site.login = login_required(admin.site.login)
 
 User = get_user_model()
 
