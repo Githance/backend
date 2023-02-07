@@ -117,6 +117,7 @@ jobs:
               chmod 600 .env
               
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull 
+              docker compose -f docker-compose_dev.yaml --env-file .github_vars down
               docker compose -f docker-compose_dev.yaml --env-file .github_vars up --detach
               
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py migrate
