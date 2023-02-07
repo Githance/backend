@@ -118,6 +118,8 @@ jobs:
               
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull 
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
+              docker volume rm -f static_value_dev media_value_dev static_value media_value
+
               docker compose -f docker-compose_dev.yaml --env-file .github_vars up --detach
               
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py migrate
