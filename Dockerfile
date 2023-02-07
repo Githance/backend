@@ -1,5 +1,5 @@
 # TODO: use slim version later
-FROM python:3.10.5
+FROM python:3.10.5-slim
 WORKDIR /code
 COPY requirements.txt .
 RUN python3 -m pip install --upgrade pip
