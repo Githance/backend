@@ -27,12 +27,14 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
-        pip install -r requirements.txt
+        pip install -r requirements_dev.txt
 
-    - name: Test with flake8
+    - name: Running tests
       run: |
-        python -m flake8
+        isort --check .
+        black --check .
+        flake8 .
+
 
   delivery-new-build:
     name: Delivery new build
@@ -115,21 +117,13 @@ jobs:
               echo "DB_PORT=${{ env.DB_PORT }}" >> .env
               
               chmod 600 .env .github_vars
-              chmod 700 is_docker_up.sh githance_dev_backend.service docker_check.service
-              mkdir -p ~/bin/
-              mkdir -p ~/.config/systemd/user/
-              mv is_docker_up.sh ~/bin/
-              mv githance_dev_backend.service docker_check.service ~/.config/systemd/user/
-
-              # systemctl --user daemon-reload
-              # systemctl --user enable docker_check.service githance_dev_backend.service
-              # systemctl --user restart docker_check.service githance_dev_backend.service
 
               docker compose -f docker-compose_dev.yaml --env-file .github_vars pull
               docker compose -f docker-compose_dev.yaml --env-file .github_vars down
               docker volume rm -f static_value_dev static_value
-
               docker compose -f docker-compose_dev.yaml --env-file .github_vars up --detach
 
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py migrate
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py collectstatic --no-input
+              
+              docker image prune
