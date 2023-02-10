@@ -10,6 +10,7 @@ from django.contrib.auth import settings
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
+
 class LoginAccessTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
 
@@ -46,4 +47,9 @@ class SocialLoginSerializer(DjRestAuthSocialLoginSerializer):
         origin = view.request.META.get("HTTP_ORIGIN")
         if origin:
             self.callback_url = origin + "/" + settings.FRONTEND_GOOGLE_CALLBACK_URL
-
+        elif settings.ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000:
+            self.callback_url = (
+                f"http://localhost:3000/{settings.FRONTEND_GOOGLE_CALLBACK_URL}"
+            )
+        else:
+            super().set_callback_url(view, adapter_class)
