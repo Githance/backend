@@ -14,3 +14,12 @@ check:
 format:
 	isort .
 	black .
+
+up_local:
+	docker compose -f ./infra/deploy_local/docker-compose_local.yaml up --build
+
+# migrate + collectstatic + createsuperuser.
+fill_local:
+	docker compose -f ./infra/deploy_local/docker-compose_local.yaml exec backend python manage.py migrate && \
+	docker compose -f ./infra/deploy_local/docker-compose_local.yaml exec backend python manage.py collectstatic --no-input && \
+	docker compose -f ./infra/deploy_local/docker-compose_local.yaml exec backend python manage.py createsuperuser

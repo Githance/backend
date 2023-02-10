@@ -188,6 +188,8 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 # Simple JWT
 SIMPLE_JWT = {
     # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#access-token-lifetime
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#refresh-token-lifetime
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#rotate-refresh-tokens
     "ROTATE_REFRESH_TOKENS": True,
