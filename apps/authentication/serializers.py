@@ -44,12 +44,14 @@ class SocialLoginSerializer(DjRestAuthSocialLoginSerializer):
     code = serializers.CharField()
 
     def set_callback_url(self, view, adapter_class):
-        origin = view.request.META.get("HTTP_ORIGIN")
-        if origin:
+        origin = view.request.META.get("HTTP_ORIGIN", "")
+        is_allow_localhost = settings.ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000
+
+        if origin and origin != "http://localhost:3000":
             self.callback_url = origin + "/" + settings.FRONTEND_GOOGLE_CALLBACK_URL
-        elif settings.ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000:
+        elif origin == "http://localhost:3000" and is_allow_localhost:
             self.callback_url = (
-                f"http://localhost:3000/{settings.FRONTEND_GOOGLE_CALLBACK_URL}"
+                "http://localhost:3000/" + settings.FRONTEND_GOOGLE_CALLBACK_URL
             )
         else:
             super().set_callback_url(view, adapter_class)

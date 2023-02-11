@@ -15,7 +15,7 @@ apps_urls = [
 openapi_urls = [
     path("", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "swagger-ui/",
+        "swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
