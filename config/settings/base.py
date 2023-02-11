@@ -188,6 +188,8 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 # Simple JWT
 SIMPLE_JWT = {
     # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#access-token-lifetime
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#refresh-token-lifetime
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#rotate-refresh-tokens
     "ROTATE_REFRESH_TOKENS": True,
@@ -200,6 +202,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_ADAPTER = "apps.authentication.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "apps.authentication.adapters.SocialAccountAdapter"
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -212,15 +215,42 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# URLs for sending confirmation emails to the frontend.
+# custom parameter to apps.authentication.serializers.SocialLoginSerializer
+ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000 = env.bool(
+    "DJANGO_ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000", False
+)
+
+
+# -------------------------------- FRONTEND URLS -------------------------------------
+
+# URL paths for sending confirmation emails to the frontend.
 FRONTEND_EMAIL_CONFIRM_URL = "auth/email/confirm/"
 FRONTEND_PASS_RESET_CONFIRM_URL = "auth/password/reset/confirm/"
+# URL to which Google redirects the user
+FRONTEND_GOOGLE_CALLBACK_URL = "auth/google/code/"
 
 
 # -------------------------------- SENDING EMAIL -------------------------------------
-
 # https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-EMAIL_BACKEND
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = env.str(
+    "DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+)
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host
+EMAIL_HOST = env.str("DJANGO_EMAIL_HOST", "localhost")
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host-user
+EMAIL_HOST_USER = env.str("DJANGO_EMAIL_HOST_USER", "")
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host-password
+EMAIL_HOST_PASSWORD = env.str("DJANGO_EMAIL_HOST_PASSWORD", "")
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-port
+EMAIL_PORT = 465
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-use-ssl
+EMAIL_USE_SSL = True
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-from-email
+DEFAULT_FROM_EMAIL = f"Githance <{EMAIL_HOST_USER}>"
+
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
+ACCOUNT_USER_DISPLAY = "apps.authentication.utils.get_name"
 
 
 # ------------------------------------ OpenAPI ---------------------------------------
@@ -229,8 +259,14 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 SPECTACULAR_SETTINGS = {
     "TITLE": "Githance API",
     "DESCRIPTION": "",
-    "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "REDOC_UI_SETTINGS": {"sideNavStyle": "path-only"},
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]/",
 }
+
+# ------------------------------------ PROXY -----------------------------------------
+
+# https://docs.djangoproject.com/en/3.2/ref/settings/#use-x-forwarded-host
+USE_X_FORWARDED_HOST = True
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

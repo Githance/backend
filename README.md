@@ -10,30 +10,18 @@ python manage.py runserver
 ```
 
 ##### Run docker-compose dev stand 
-You will need a **.env** file in **infra/** directory.
-See the **/infra/.env.example** file.
+You will need a **.env** file in **infra/deploy_local/** directory.
+See the **/infra/deploy_local/.env.local.example** file.
 
-Сontainers will be launched:
+Сontainers will be up:
 1. postgresql
 2. nginx, which listen 80 port
 3. backend, which rebuilding with actual code
 ```
-1. cd infra
-2. docker-compose -f docker-compose_local.yaml up -d --build
-```
-###### Useful commands
-
-Making migrations:
-```
-docker-compose -f docker-compose_local.yaml exec backend python manage.py migrate
- ```
-
-Unloading static files:
-```
-docker-compose -f docker-compose_local.yaml exec backend python manage.py collectstatic --no-input
+make up_local
 ```
 
-Creating superuser:
+Making migrations + loading static files + creating superuser:
 ```
-docker-compose -f docker-compose_local.yaml exec backend python manage.py createsuperuser
+make fill_local
 ```

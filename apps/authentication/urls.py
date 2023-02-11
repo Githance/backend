@@ -12,7 +12,6 @@ from django.conf import settings
 from django.urls import include, path
 
 from .views import (
-    GoogleLoginCallbackView,
     GoogleLoginView,
     LoginWithPasswordView,
     LogoutView,
@@ -49,11 +48,10 @@ main_urls = [
 ]
 
 social_urls = [
-    path("google/login/", GoogleLoginView.as_view(), name="google_login"),
     path(
-        "google/login/callback/",
-        GoogleLoginCallbackView.as_view(),
-        name="google_callback",
+        "google/login/",
+        GoogleLoginView.as_view(),
+        name="google_login",
     ),
 ]
 
