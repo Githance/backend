@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev
-      - feature/deploy_change_repo
 
 env:
   REGISTRY: ghcr.io
