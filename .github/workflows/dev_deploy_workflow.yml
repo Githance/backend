@@ -58,7 +58,7 @@ jobs:
       -
         name: Set variables
         run: |
-          echo REP_OWNER=$(echo ${{ github.GITHUB_REPOSITORY }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+          echo REP_OWNER=$(echo ${{ github.REPOSITORY }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
       -
         name: Build image and push to GitHub Packages
         uses: docker/build-push-action@v3
