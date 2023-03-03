@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: githance_backend
+  IMAGE_NAME: build
   DEPLOY_PATH: GITHANCE_DEV
   DB_ENGINE: django.db.backends.postgresql
   DB_HOST: db_dev
@@ -68,8 +68,8 @@ jobs:
           labels: runnumber=${GITHUB_RUN_ID}
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:dev,
-            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}:dev,
+            ${{ env.REGISTRY }}/${{ env.REP_OWNER }}:${{ github.sha }}
 #      -
 #        name: Copy infra files via ssh
 #        uses: appleboy/scp-action@master
