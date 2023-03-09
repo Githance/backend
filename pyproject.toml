@@ -18,6 +18,7 @@ isort = "^5.11"
 black = "^22.12"
 flake8-docstrings = "^1.6"
 flake8-return = "^1.2"
+django-debug-toolbar = "^3.8.1"
 
 [tool.black]
 line-length = 88

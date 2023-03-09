@@ -63,6 +63,7 @@ jobs:
         with:
           context: .
           file: Dockerfile
+          target: dev_build
           labels: runnumber=${GITHUB_RUN_ID}
           push: true
           tags: |
