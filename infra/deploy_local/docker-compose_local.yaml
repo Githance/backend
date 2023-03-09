@@ -15,6 +15,7 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
+      target: dev_build
     restart: always
     volumes:
       - staticfiles:/code/apps/staticfiles/
