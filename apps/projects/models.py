@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-
 User = get_user_model()
 
 
@@ -18,14 +17,12 @@ class AbstractClassifier(models.Model):
 
 
 class ProjectType(AbstractClassifier):
-
     class Meta:
         verbose_name = "Тип проекта"
         verbose_name_plural = "Типы проекта"
 
 
 class ProjectStatus(AbstractClassifier):
-
     class Meta:
         verbose_name = "Статус проекта"
         verbose_name_plural = "Статусы проекта"
@@ -43,8 +40,8 @@ class Project(AbstractClassifier):
         verbose_name="Типы проекта",
     )
     status = models.ForeignKey(
-        User,
-        on_delete=models.SET_DEFAULT,
+        ProjectStatus,
+        on_delete=models.RESTRICT,
         verbose_name="Статус",
     )
     intro = models.CharField(

@@ -4,14 +4,12 @@ from apps.projects.models import AbstractClassifier, Project, User
 
 
 class Role(AbstractClassifier):
-
     class Meta:
         verbose_name = "Проектная роль"
         verbose_name_plural = "Проектные роли"
 
 
 class Profession(AbstractClassifier):
-
     class Meta:
         verbose_name = "Профессия"
         verbose_name_plural = "Профессии"
@@ -19,15 +17,9 @@ class Profession(AbstractClassifier):
 
 class Participant(models.Model):
     project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        related_name='participants'
+        Project, on_delete=models.CASCADE, related_name="participants"
     )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.RESTRICT,
-        related_name='projects'
-    )
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="projects")
     role = models.ForeignKey(
         Role,
         on_delete=models.RESTRICT,
