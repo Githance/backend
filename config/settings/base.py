@@ -18,7 +18,7 @@ SECRET_KEY = env.str(
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", []) + ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", [])
 
 # https://pypi.org/project/django-cors-headers/
 CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", [])
@@ -231,6 +231,7 @@ FRONTEND_GOOGLE_CALLBACK_URL = "auth/google/code/"
 
 
 # -------------------------------- SENDING EMAIL -------------------------------------
+
 # https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-EMAIL_BACKEND
 EMAIL_BACKEND = env.str(
     "DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"

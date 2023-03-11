@@ -1,4 +1,4 @@
-# Приводит venv в соответствие с pyproject.toml и обновляет requirements.txt.
+# Приводит venv в соответствие с pyproject.toml и обновляет requirements[_dev].txt.
 poetry:
 	poetry add pycowsay && \
 	poetry remove pycowsay && \
@@ -15,11 +15,16 @@ format:
 	isort .
 	black .
 
-up_local:
+up:
 	docker compose -f ./infra/deploy_local/docker-compose_local.yaml up --build
 
-# migrate + collectstatic + createsuperuser.
-fill_local:
+# migrate + collectstatic
+migrate:
 	docker compose -f ./infra/deploy_local/docker-compose_local.yaml exec backend python manage.py migrate && \
-	docker compose -f ./infra/deploy_local/docker-compose_local.yaml exec backend python manage.py collectstatic --no-input && \
+	docker compose -f ./infra/deploy_local/docker-compose_local.yaml exec backend python manage.py collectstatic --no-input
+
+createsuperuser:
 	docker compose -f ./infra/deploy_local/docker-compose_local.yaml exec backend python manage.py createsuperuser
+
+down:
+	docker compose -f ./infra/deploy_local/docker-compose_local.yaml down
