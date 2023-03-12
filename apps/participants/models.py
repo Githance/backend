@@ -17,16 +17,26 @@ class Profession(AbstractClassifier):
 
 class Participant(models.Model):
     project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="participants"
+        Project,
+        on_delete=models.CASCADE,
+        related_name="participants",
+        verbose_name="Проект",
     )
-    user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="projects")
+    user = models.ForeignKey(
+        User,
+        on_delete=models.RESTRICT,
+        related_name="projects",
+        verbose_name="Участник",
+    )
     role = models.ForeignKey(
         Role,
         on_delete=models.RESTRICT,
+        verbose_name="Роль",
     )
     profession = models.ForeignKey(
         Profession,
         on_delete=models.RESTRICT,
+        verbose_name="Профессия",
     )
     join_date = models.DateTimeField(
         "Дата присоединения",
@@ -41,3 +51,12 @@ class Participant(models.Model):
     class Meta:
         verbose_name = "Участник"
         verbose_name_plural = "Участники"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=("project", "user", "profession"), name="unique_participant"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user} участвует в {self.project} как {self.profession}"

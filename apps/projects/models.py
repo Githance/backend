@@ -37,6 +37,7 @@ class Project(AbstractClassifier):
     )
     types = models.ManyToManyField(
         ProjectType,
+        through="ProjectTypeProject",
         verbose_name="Типы проекта",
     )
     status = models.ForeignKey(
@@ -64,3 +65,25 @@ class Project(AbstractClassifier):
     class Meta:
         verbose_name = "Проект"
         verbose_name_plural = "Проекты"
+
+
+class ProjectTypeProject(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        verbose_name="Проект",
+    )
+    type = models.ForeignKey(
+        ProjectType,
+        on_delete=models.RESTRICT,
+        verbose_name="Тип проекта",
+    )
+
+    class Meta:
+        verbose_name = "тип проекта"
+        verbose_name_plural = "Типы проекта"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("project", "type"), name="unique_project_type"
+            )
+        ]
