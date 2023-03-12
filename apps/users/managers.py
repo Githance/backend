@@ -1,14 +1,20 @@
-from django.contrib.auth import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import UserManager
+from django.db import transaction
+
+from .models import UserInfo
 
 
 class CustomUserManager(UserManager):
-    def create_verified_email(self, user):
+    def create_account_email(self, user, verified=False):
         from allauth.account.models import EmailAddress
 
-        email = EmailAddress(user=user, email=user.email, verified=True, primary=True)
-        email.save()
+        EmailAddress.objects.create(
+            user=user,
+            email=user.email,
+            verified=verified,
+            primary=True,
+        )
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
@@ -16,10 +22,12 @@ class CustomUserManager(UserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.password = make_password(password)
-        user.save(using=self._db)
 
-        if user.is_superuser and "allauth.account" in settings.INSTALLED_APPS:
-            self.create_verified_email(user)
+        with transaction.atomic():
+            user.save(using=self._db)
+            UserInfo.objects.create(user=user)
+            if user.is_superuser:
+                self.create_account_email(user, verified=True)
 
         return user
 

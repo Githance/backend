@@ -1,15 +1,6 @@
-# githance_backend
+# Githance backend
 
-## Developer environment
-
-You can run simple server or run docker-compose dev stand.
-
-##### Run dev server with sqlite db:
-```
-python manage.py runserver
-```
-
-##### Run docker-compose dev stand 
+##### Run local server with docker-compose
 You will need a **.env** file in **infra/deploy_local/** directory.
 See the **/infra/deploy_local/.env.local.example** file.
 
@@ -18,10 +9,15 @@ See the **/infra/deploy_local/.env.local.example** file.
 2. nginx, which listen 80 port
 3. backend, which rebuilding with actual code
 ```
-make up_local
+make up
 ```
 
-Making migrations + loading static files + creating superuser:
+Make migrations + collect static files:
 ```
-make fill_local
+make migrate
+```
+
+Create superuser:
+```
+make createsuperuser
 ```
