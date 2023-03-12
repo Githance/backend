@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import (
@@ -27,6 +28,14 @@ openapi_urls = [
 ]
 
 urlpatterns = []
+
+if "debug_toolbar" in settings.INSTALLED_APPS:
+    import debug_toolbar
+
+    urlpatterns += [
+        path("admin/__debug__/", include(debug_toolbar.urls)),
+    ]
+
 urlpatterns += [
     path("admin/", admin.site.urls),
     path("api/", include(apps_urls)),
