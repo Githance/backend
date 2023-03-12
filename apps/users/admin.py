@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from .forms import CustomUserChangeForm, CustomUserCreationForm, UserInfoForm
+from .forms import UserChangeForm, UserCreationForm, UserInfoForm
 from .models import UserInfo
+from .utils import form_safe_link
 
 admin.site.site_header = "Githance, административная часть"
 admin.site.site_title = "Githance"
@@ -74,8 +74,8 @@ class UserAdmin(DjangoUserAdmin):
         ),
     )
     readonly_fields = ("last_login", "date_joined")
-    form = CustomUserChangeForm
-    add_form = CustomUserCreationForm
+    form = UserChangeForm
+    add_form = UserCreationForm
     inlines = (UserInfoInline,)
     list_select_related = ("user_info",)
 
@@ -91,18 +91,8 @@ class UserAdmin(DjangoUserAdmin):
 
     @admin.display(description="Портфолио")
     def portfolio(self, obj):
-        text = "ссылка" if obj.user_info.portfolio_url else "-"
-        return format_html(
-            "<a href='{url}'>{text}</a>",
-            url=obj.user_info.portfolio_url,
-            text=text,
-        )
+        return form_safe_link(obj.user_info.portfolio_url)
 
     @admin.display(description="Резюме")
     def summary(self, obj):
-        text = "ссылка" if obj.user_info.summary_url else "-"
-        return format_html(
-            "<a href='{url}'>{text}</a>",
-            url=obj.user_info.summary_url,
-            text=text,
-        )
+        return form_safe_link(obj.user_info.summary_url)
