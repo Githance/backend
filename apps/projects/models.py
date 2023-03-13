@@ -39,11 +39,13 @@ class Project(AbstractClassifier):
         ProjectType,
         through="ProjectTypeProject",
         verbose_name="Типы проекта",
+        related_name="projects",
     )
     status = models.ForeignKey(
         ProjectStatus,
         on_delete=models.RESTRICT,
         verbose_name="Статус",
+        related_name="projects",
     )
     intro = models.CharField(
         "Краткое описание",
@@ -58,7 +60,7 @@ class Project(AbstractClassifier):
         auto_now_add=True,
     )
     last_top_date = models.DateTimeField(
-        "Дата последнего события",
+        "В топе последний раз",
         auto_now_add=True,
     )
 

@@ -3,10 +3,10 @@ from django.db import models
 from apps.projects.models import AbstractClassifier, Project, User
 
 
-class Role(AbstractClassifier):
+class AccessLevel(AbstractClassifier):
     class Meta:
-        verbose_name = "Проектная роль"
-        verbose_name_plural = "Проектные роли"
+        verbose_name = "Уровень доступа"
+        verbose_name_plural = "Уровни доступа"
 
 
 class Profession(AbstractClassifier):
@@ -26,12 +26,12 @@ class Participant(models.Model):
         User,
         on_delete=models.RESTRICT,
         related_name="projects",
-        verbose_name="Участник",
+        verbose_name="Пользователь",
     )
-    role = models.ForeignKey(
-        Role,
+    access_level = models.ForeignKey(
+        AccessLevel,
         on_delete=models.RESTRICT,
-        verbose_name="Роль",
+        verbose_name="Уровень доступа",
     )
     profession = models.ForeignKey(
         Profession,
@@ -59,4 +59,4 @@ class Participant(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user} участвует в {self.project} как {self.profession}"
+        return f"[{self.user}][{self.project}][{self.profession}]"
