@@ -11,6 +11,8 @@ from apps.authentication.urls import dummy_front_urls as auth_dummy_urls
 
 apps_urls = [
     path("", include("apps.authentication.urls")),
+    path("", include("apps.projects.urls")),
+    path("", include("apps.participants.urls")),
 ]
 
 openapi_urls = [

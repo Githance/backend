@@ -1,11 +1,10 @@
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 
 from .models import Project, ProjectStatus, ProjectType
 from .permissions import IsOwnerOrStaffOrReadOnly
 from .serializers import (
     ProjectDetailSerializer,
     ProjectListSerializer,
-    ProjectShortSerializer,
     ProjectStatusSerializer,
     ProjectTypeSerializer,
 )

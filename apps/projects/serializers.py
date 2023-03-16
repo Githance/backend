@@ -22,19 +22,25 @@ class BaseProjectMeta:
 
 class ProjectShortSerializer(serializers.ModelSerializer):
     class Meta(BaseProjectMeta):
-        readonly_fields = super().fields
+        read_only_fields = BaseProjectMeta.fields
 
 
 class ProjectListSerializer(ProjectShortSerializer):
     class Meta(BaseProjectMeta):
-        fields = super().fields + ("intro",)
-        readonly_fields = fields
+        fields = BaseProjectMeta.fields + ("intro",)
+        read_only_fields = fields
 
 
 class ProjectDetailSerializer(ProjectListSerializer):
     # TODO: реализовать сериалайзер
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    name = serializers.CharField(required=True)
+    intro = serializers.CharField(required=True)
+    types = ProjectTypeSerializer(many=True)
+    description = serializers.CharField(required=True)
+
     class Meta(BaseProjectMeta):
-        fields = super().fields + (
+        fields = BaseProjectMeta.fields + (
             "intro",
             "owner",
             "types",
@@ -42,3 +48,4 @@ class ProjectDetailSerializer(ProjectListSerializer):
             "created_date",
             "last_top_date",
         )
+        read_only_fields = ("created_date", "last_top_date")
