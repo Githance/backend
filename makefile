@@ -7,12 +7,13 @@ poetry:
 
 # Проверяет код на соответствие PEP8. Не форматирует, только информирует.
 check:
-	isort --check .
+	isort --check --skip-gitignore .
 	black --check .
 	flake8 .
+	python manage.py makemigrations --check
 
 format:
-	isort .
+	isort --skip-gitignore .
 	black .
 
 up:
