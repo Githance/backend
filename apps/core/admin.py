@@ -25,7 +25,7 @@ class AdminSite(admin.AdminSite):
 
         app_list = []
         for app_name in app_order:
-            if app_dict.get(app_name) is not None:
+            if app_name in app_dict:
                 app_list.append(app_dict.pop(app_name))
 
         app_list += sorted(app_dict.values(), key=lambda x: x["name"].lower())
