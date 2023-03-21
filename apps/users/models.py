@@ -9,14 +9,17 @@ from django.utils.translation import gettext_lazy as _
 from .validators import validate_telegram_name
 
 
-class UserInfo(models.Model):
-    """Additional information to User model."""
+class User(AbstractBaseUser, PermissionsMixin):
+    from .managers import CustomUserManager
 
-    user = models.OneToOneField(
-        to="User",
-        on_delete=models.CASCADE,
-        related_name="user_info",
-        verbose_name="Пользователь",
+    name = models.CharField(
+        "Имя",
+        max_length=38,
+        default=None,
+    )
+    email = models.EmailField(
+        _("email address"),
+        unique=True,
     )
     bio = models.TextField(
         verbose_name="О себе",
@@ -43,17 +46,10 @@ class UserInfo(models.Model):
         blank=True,
     )
 
-    def __str__(self):
-        return self.user.name
-
-
-class User(AbstractBaseUser, PermissionsMixin):
-    from .managers import CustomUserManager
-
-    name = models.CharField("Имя", max_length=38, default=None)
-    email = models.EmailField(_("email address"), unique=True)
-    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
-
+    date_joined = models.DateTimeField(
+        _("date joined"),
+        default=timezone.now,
+    )
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
@@ -67,9 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             "Unselect this instead of deleting accounts."
         ),
     )
-
     objects = CustomUserManager()
-
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ("name",)
@@ -79,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _("users")
 
     def __str__(self):
-        return f"{self.name}: {self.email}"
+        return self.name
 
     def clean(self):
         super().clean()

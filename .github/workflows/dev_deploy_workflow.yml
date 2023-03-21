@@ -34,6 +34,7 @@ jobs:
         isort --check .
         black --check .
         flake8 .
+        python manage.py makemigrations --check
 
   delivery-new-build:
     name: Delivery new build
@@ -137,4 +138,4 @@ jobs:
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py migrate
               docker compose  -f docker-compose_dev.yaml --env-file .github_vars exec -T backend python manage.py collectstatic --no-input
 
-              docker image prune
+              docker image prune --force

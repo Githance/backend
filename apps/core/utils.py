@@ -1,4 +1,3 @@
-# TODO move utils.py to core app when it is created
 from django.utils.html import format_html
 
 

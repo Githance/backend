@@ -2,8 +2,6 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import UserManager
 from django.db import transaction
 
-from .models import UserInfo
-
 
 class CustomUserManager(UserManager):
     def create_account_email(self, user, verified=False):
@@ -25,9 +23,7 @@ class CustomUserManager(UserManager):
 
         with transaction.atomic():
             user.save(using=self._db)
-            UserInfo.objects.create(user=user)
-            if user.is_superuser:
-                self.create_account_email(user, verified=True)
+            self.create_account_email(user, verified=user.is_superuser)
 
         return user
 

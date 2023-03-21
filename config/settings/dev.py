@@ -2,6 +2,13 @@ from .base import *  # noqa: F403,F401
 
 DEBUG = True
 
+SIMPLE_JWT.update(
+    {
+        "ACCESS_TOKEN_LIFETIME": timedelta(
+            minutes=env.int("DJANGO_ACCESS_TOKEN_LIFETIME", 60 * 24 * 7)
+        )
+    }
+)
 
 # -------------------------------- DJANGO DEBUG TOOLBAR --------------------------------
 
