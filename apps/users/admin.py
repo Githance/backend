@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.utils import form_safe_link
 from .forms import UserChangeForm, UserCreationForm
-from .utils import form_safe_link
 
 admin.site.site_header = "Githance, административная часть"
 admin.site.site_title = "Githance"
@@ -39,7 +39,10 @@ class UserAdmin(DjangoUserAdmin):
                 )
             },
         ),
-        (_("Personal info"), {"fields": ("name", "telegram", "portfolio_url", "summary_url",)}),
+        (
+            _("Personal info"),
+            {"fields": ("name", "telegram", "portfolio_url", "summary_url", "bio")},
+        ),
         (
             _("Permissions"),
             {

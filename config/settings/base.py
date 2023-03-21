@@ -31,8 +31,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 DJANGO_APPS = [
     "django.contrib.sites",
-    "django.contrib.admin",
-    "django.contrib.auth",
+    "apps.core.apps.AdminConfig",
+    "apps.core.apps.AuthConfig",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -56,6 +56,7 @@ LOCAL_APPS = [
     "apps.authentication",
     "apps.projects",
     "apps.participants",
+    "apps.core.apps.CoreConfig",
 ]
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#installed-apps
