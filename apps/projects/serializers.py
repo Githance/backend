@@ -34,7 +34,6 @@ class ProjectIntroROSerializer(ProjectNameROSerializer):
         model = Project
         fields = ("id", "name", "status", "intro")
         read_only_fields = fields
-        ref_name = "Проект"
 
 
 class ProjectDetailROSerializer(ProjectIntroROSerializer):
