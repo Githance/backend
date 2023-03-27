@@ -1,4 +1,3 @@
-from django.db.models import F
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import AllowAny
 
@@ -12,9 +11,7 @@ class AccessLevelViewSet(
 ):
     """Return a list of all possible access levels."""
 
-    queryset = AccessLevel.objects.all().order_by(
-        F("order").asc(nulls_last=True), "name"
-    )
+    queryset = AccessLevel.objects.all()
     serializer_class = AccessLevelSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
@@ -26,8 +23,6 @@ class ProfessionViewSet(
 ):
     """Return a list of all possible professions."""
 
-    queryset = Profession.objects.all().order_by(
-        F("order").asc(nulls_last=True), "name"
-    )
+    queryset = Profession.objects.all()
     serializer_class = ProfessionSerializer
     permission_classes = (AllowAny,)

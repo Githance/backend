@@ -8,12 +8,14 @@ class AccessLevel(BaseChoiceModel):
     class Meta:
         verbose_name = "Уровень доступа"
         verbose_name_plural = "Уровни доступа"
+        ordering = models.F("order").asc(nulls_last=True), "name"
 
 
 class Profession(BaseChoiceModel):
     class Meta:
         verbose_name = "Профессия"
         verbose_name_plural = "Профессии"
+        ordering = models.F("order").asc(nulls_last=True), "name"
 
 
 class Participant(BaseModel):

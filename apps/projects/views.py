@@ -1,4 +1,4 @@
-from django.db.models import F, Prefetch
+from django.db.models import Prefetch
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -41,13 +41,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action == "statuses":
-            return ProjectStatus.objects.all().order_by(
-                F("order").asc(nulls_last=True), "name"
-            )
+            return ProjectStatus.objects.all()
         if self.action == "types":
-            return ProjectType.objects.all().order_by(
-                F("order").asc(nulls_last=True), "name"
-            )
+            return ProjectType.objects.all()
         if self.action == "retrieve":
             return Project.objects.select_related("owner", "status").prefetch_related(
                 "types", PREFETCH_PARTICIPANTS

@@ -11,12 +11,14 @@ class ProjectType(BaseChoiceModel):
     class Meta:
         verbose_name = "Тип проекта"
         verbose_name_plural = "Типы проекта"
+        ordering = models.F("order").asc(nulls_last=True), "name"
 
 
 class ProjectStatus(BaseChoiceModel):
     class Meta:
         verbose_name = "Статус проекта"
         verbose_name_plural = "Статусы проекта"
+        ordering = models.F("order").asc(nulls_last=True), "name"
 
 
 class Project(BaseModel):
