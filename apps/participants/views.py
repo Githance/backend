@@ -1,14 +1,11 @@
-from rest_framework import mixins, viewsets
 from rest_framework.permissions import AllowAny
 
+from apps.core.views import ListModelViewSet
 from .models import AccessLevel, Profession
 from .serializers import AccessLevelSerializer, ProfessionSerializer
 
 
-class AccessLevelViewSet(
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
-):
+class AccessLevelViewSet(ListModelViewSet):
     """Return a list of all possible access levels."""
 
     queryset = AccessLevel.objects.all()
@@ -17,10 +14,7 @@ class AccessLevelViewSet(
     pagination_class = None
 
 
-class ProfessionViewSet(
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
-):
+class ProfessionViewSet(ListModelViewSet):
     """Return a list of all possible professions."""
 
     queryset = Profession.objects.all()
