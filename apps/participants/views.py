@@ -1,23 +1,33 @@
-from rest_framework import viewsets
+from django.db.models import F
+from rest_framework import mixins, viewsets
+from rest_framework.permissions import AllowAny
 
-from .models import AccessLevel, Participant, Profession
-from .serializers import (
-    AccessLevelSerializer,
-    ParticipantSerializer,
-    ProfessionSerializer,
-)
+from .models import AccessLevel, Profession
+from .serializers import AccessLevelSerializer, ProfessionSerializer
 
 
-class AccessLevelViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = AccessLevel.objects.all()
+class AccessLevelViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Return a list of all possible access levels."""
+
+    queryset = AccessLevel.objects.all().order_by(
+        F("order").asc(nulls_last=True), "name"
+    )
     serializer_class = AccessLevelSerializer
+    permission_classes = (AllowAny,)
+    pagination_class = None
 
 
-class ParticipantViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Participant.objects.all()
-    serializer_class = ParticipantSerializer
+class ProfessionViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Return a list of all possible professions."""
 
-
-class ProfessionViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Profession.objects.all()
+    queryset = Profession.objects.all().order_by(
+        F("order").asc(nulls_last=True), "name"
+    )
     serializer_class = ProfessionSerializer
+    permission_classes = (AllowAny,)

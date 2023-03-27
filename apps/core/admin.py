@@ -1,4 +1,11 @@
 from django.contrib import admin
+from django.db.models import F
+
+
+class BaseChoiceAdmin(admin.ModelAdmin):
+    list_display = ("name", "order")
+    list_editable = ("order",)
+    ordering = (F("order").asc(nulls_last=True), "name")
 
 
 class AdminSite(admin.AdminSite):
