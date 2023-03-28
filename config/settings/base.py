@@ -158,7 +158,25 @@ MEDIA_ROOT = BASE_DIR / "apps" / "mediafiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# ----------------------------- DJANGO REST FRAMEWORK ---------------------------------
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ["apps.core.permissions.AllowNobody"],
+    "DEFAULT_PAGINATION_CLASS": "apps.core.paginators.NumberPagination",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
 # -------------------------------- AUTHENTICATION -------------------------------------
+
+# Django REST framework
+REST_FRAMEWORK.update(
+    {
+        "DEFAULT_AUTHENTICATION_CLASSES": (
+            "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+        ),
+    }
+)
 
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
@@ -166,14 +184,6 @@ AUTH_USER_MODEL = "users.User"
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
-
-# Django REST framework
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-    ),
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-}
 
 # dj-rest-auth
 # https://dj-rest-auth.readthedocs.io/en/latest/configuration.html

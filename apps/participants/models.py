@@ -1,21 +1,24 @@
 from django.db import models
 
-from apps.projects.models import AbstractClassifier, Project, User
+from apps.core.models import BaseChoiceModel, BaseModel
+from apps.projects.models import Project, User
 
 
-class AccessLevel(AbstractClassifier):
+class AccessLevel(BaseChoiceModel):
     class Meta:
         verbose_name = "Уровень доступа"
         verbose_name_plural = "Уровни доступа"
+        ordering = models.F("order").asc(nulls_last=True), "name"
 
 
-class Profession(AbstractClassifier):
+class Profession(BaseChoiceModel):
     class Meta:
         verbose_name = "Профессия"
         verbose_name_plural = "Профессии"
+        ordering = models.F("order").asc(nulls_last=True), "name"
 
 
-class Participant(models.Model):
+class Participant(BaseModel):
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
@@ -25,7 +28,7 @@ class Participant(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.RESTRICT,
-        related_name="projects",
+        related_name="participants",
         verbose_name="Пользователь",
     )
     access_level = models.ForeignKey(
@@ -37,15 +40,6 @@ class Participant(models.Model):
         Profession,
         on_delete=models.RESTRICT,
         verbose_name="Профессия",
-    )
-    join_date = models.DateTimeField(
-        "Дата присоединения",
-        auto_now_add=True,
-    )
-    leave_date = models.DateTimeField(
-        "Дата прекращения участия",
-        null=True,
-        blank=True,
     )
 
     class Meta:
@@ -59,4 +53,4 @@ class Participant(models.Model):
         ]
 
     def __str__(self):
-        return f"[{self.user}][{self.project}][{self.profession}]"
+        return f"[{self.user}] [{self.project}] [{self.profession}]"
