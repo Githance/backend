@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .validators import validate_telegram_name
+from .validators import EmailValidator, validate_telegram_name
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -18,8 +18,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=None,
     )
     email = models.EmailField(
-        _("email address"),
+        "Email",
         unique=True,
+        max_length=254,
+        validators=(EmailValidator(),),
     )
     bio = models.TextField(
         verbose_name="О себе",

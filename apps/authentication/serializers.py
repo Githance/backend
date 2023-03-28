@@ -10,6 +10,8 @@ from django.contrib.auth import settings
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
+from apps.users.validators import EmailValidator
+
 
 class LoginAccessTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
@@ -25,7 +27,16 @@ class RefreshAccessTokenSerializer(CookieTokenRefreshSerializer):
 
 class RegisterSerializer(DjRestAuthRegisterSerializer):
     username = None
-    name = serializers.CharField(required=True, max_length=38, min_length=1)
+    name = serializers.CharField(
+        required=True,
+        max_length=38,
+        min_length=1,
+    )
+    email = serializers.EmailField(
+        required=True,
+        max_length=254,
+        validators=(EmailValidator(),),
+    )
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
