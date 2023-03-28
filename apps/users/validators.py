@@ -2,6 +2,7 @@ import re
 
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator as DjangoEmailValidator
+from django.utils.regex_helper import _lazy_re_compile
 
 
 def validate_telegram_name(value):
@@ -14,6 +15,15 @@ def validate_telegram_name(value):
 
 
 class EmailValidator(DjangoEmailValidator):
+    # https://github.com/Githance/testing/issues/11
+    # Removed %|/! characters to fix sending emails via Beget SMTP server.
+    user_regex = _lazy_re_compile(
+        r"(^[-#$&'*+=?^_`{}~0-9A-Z]+(\.[-#$&'*+=?^_`{}~0-9A-Z]+)*\Z"
+        r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|'
+        r'\\[\001-\011\013\014\016-\177])*"\Z)',
+        re.IGNORECASE)
+
+    # https://github.com/Githance/testing/issues/15
     # Like the original __call__ , but it doesn't try to convert non-ASCII to punycode.
     def __call__(self, value):
         if not value or "@" not in value:
