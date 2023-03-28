@@ -1,7 +1,4 @@
-{% load account %}
-
-{% user_display user as user_name %}
-Здравствуйте, {{ user_name }}!
+Здравствуйте!
 
 Для завершения регистрации перейдите, пожалуйста, по ссылке:
 {{ activate_url }}
