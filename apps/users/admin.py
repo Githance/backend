@@ -6,9 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from apps.core.utils import form_safe_link
 from .forms import UserChangeForm, UserCreationForm
 
-admin.site.site_header = "Githance, административная часть"
-admin.site.site_title = "Githance"
-
 User = get_user_model()
 
 

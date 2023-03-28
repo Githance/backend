@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.users.serializers import UserShortSerializer
 from .models import Project, ProjectStatus, ProjectType
 
 
@@ -15,37 +16,38 @@ class ProjectStatusSerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class BaseProjectMeta:
-    model = Project
-    fields = ("id", "name", "status")
+class ProjectNameSerializer(serializers.ModelSerializer):
+    status = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True,
+        label="Статус",
+    )
 
-
-class ProjectShortSerializer(serializers.ModelSerializer):
-    class Meta(BaseProjectMeta):
-        read_only_fields = BaseProjectMeta.fields
-
-
-class ProjectListSerializer(ProjectShortSerializer):
-    class Meta(BaseProjectMeta):
-        fields = BaseProjectMeta.fields + ("intro",)
+    class Meta:
+        model = Project
+        fields = ("id", "name", "status")
         read_only_fields = fields
 
 
-class ProjectDetailSerializer(ProjectListSerializer):
-    # TODO: реализовать сериалайзер
-    owner = serializers.PrimaryKeyRelatedField(read_only=True)
-    name = serializers.CharField(required=True)
-    intro = serializers.CharField(required=True)
-    types = ProjectTypeSerializer(many=True)
-    description = serializers.CharField(required=True)
+class ProjectIntroSerializer(ProjectNameSerializer):
+    class Meta:
+        model = Project
+        fields = ("id", "name", "status", "intro")
+        read_only_fields = fields
 
-    class Meta(BaseProjectMeta):
-        fields = BaseProjectMeta.fields + (
+
+class ProjectDetailSerializer(ProjectIntroSerializer):
+    types = ProjectTypeSerializer(many=True, read_only=True, label="Тип проекта")
+    owner = UserShortSerializer(read_only=True, label="Пользователь")
+
+    class Meta:
+        model = Project
+        fields = (
+            "id",
+            "name",
             "intro",
-            "owner",
-            "types",
             "description",
-            "created_date",
-            "last_top_date",
+            "types",
+            "status",
+            "owner",
         )
-        read_only_fields = ("created_date", "last_top_date")

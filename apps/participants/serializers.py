@@ -16,6 +16,27 @@ class ProfessionSerializer(serializers.ModelSerializer):
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
+    user_id = serializers.PrimaryKeyRelatedField(
+        source="user",
+        read_only=True,
+        label="Идентификатор пользователя",
+    )
+    name = serializers.CharField(
+        source="user.name",
+        label="Имя пользователя",
+    )
+    profession = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True,
+        label="Профессия в проекте",
+    )
+    access_level = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True,
+        label="Полномочия в проекте",
+    )
+
     class Meta:
         model = Participant
-        fields = ("id", "project", "user", "profession", "access_level")
+        fields = ("user_id", "name", "profession", "access_level")
+        read_only_fields = fields

@@ -1,23 +1,22 @@
-from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 
-from .models import AccessLevel, Participant, Profession
-from .serializers import (
-    AccessLevelSerializer,
-    ParticipantSerializer,
-    ProfessionSerializer,
-)
+from apps.core.views import ListModelViewSet
+from .models import AccessLevel, Profession
+from .serializers import AccessLevelSerializer, ProfessionSerializer
 
 
-class AccessLevelViewSet(viewsets.ReadOnlyModelViewSet):
+class AccessLevelViewSet(ListModelViewSet):
+    """Return a list of all possible access levels."""
+
     queryset = AccessLevel.objects.all()
     serializer_class = AccessLevelSerializer
+    permission_classes = (AllowAny,)
+    pagination_class = None
 
 
-class ParticipantViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Participant.objects.all()
-    serializer_class = ParticipantSerializer
+class ProfessionViewSet(ListModelViewSet):
+    """Return a list of all possible professions."""
 
-
-class ProfessionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Profession.objects.all()
     serializer_class = ProfessionSerializer
+    permission_classes = (AllowAny,)
