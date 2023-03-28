@@ -1,4 +1,3 @@
-from django.db.models import Prefetch
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -16,11 +15,6 @@ from .serializers import (
     ProjectStatusSerializer,
     ProjectTypeSerializer,
 )
-
-SELECTED_PARTICIPANTS_QS = Participant.objects.select_related(
-    "user", "profession", "access_level"
-)
-PREFETCH_PARTICIPANTS = Prefetch("participants", queryset=SELECTED_PARTICIPANTS_QS)
 
 
 # TODO uncompleted ProjectViewSet
@@ -46,10 +40,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return ProjectType.objects.all()
         if self.action == "retrieve":
             return Project.objects.select_related("owner", "status").prefetch_related(
-                "types", PREFETCH_PARTICIPANTS
+                "types"
             )
         if self.action == "participants":
-            return SELECTED_PARTICIPANTS_QS
+            return Participant.objects.select_related(
+                "user", "profession", "access_level"
+            )
         return Project.objects.all()
 
     def get_permissions(self):
