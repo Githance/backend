@@ -7,12 +7,12 @@ from rest_framework.status import HTTP_200_OK
 
 from apps.core.utils import paginated_response
 from apps.participants.models import Participant
-from apps.participants.serializers import ParticipantROSerializer
+from apps.participants.serializers import ParticipantSerializer
 from .models import Project, ProjectStatus, ProjectType
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
-    ProjectDetailROSerializer,
-    ProjectIntroROSerializer,
+    ProjectDetailSerializer,
+    ProjectIntroSerializer,
     ProjectStatusSerializer,
     ProjectTypeSerializer,
 )
@@ -34,10 +34,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
         if self.action == "types":
             return ProjectTypeSerializer
         if self.action == "list":
-            return ProjectIntroROSerializer
+            return ProjectIntroSerializer
         if self.action == "participants":
-            return ParticipantROSerializer
-        return ProjectDetailROSerializer
+            return ParticipantSerializer
+        return ProjectDetailSerializer
 
     def get_queryset(self):
         if self.action == "statuses":
@@ -69,7 +69,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         """Return a list of all possible projects' types."""
         return super().list(self.request)
 
-    @extend_schema(responses=ParticipantROSerializer(many=True))
+    @extend_schema(responses=ParticipantSerializer(many=True))
     @action(detail=True)
     def participants(self, request, pk=None, format=None):
         """Return a list of project participants except an owner."""

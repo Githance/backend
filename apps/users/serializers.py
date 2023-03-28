@@ -3,14 +3,14 @@ from rest_framework import serializers
 from .models import User
 
 
-class UserShortROSerializer(serializers.ModelSerializer):
+class UserShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "name")
         read_only_fields = fields
 
 
-class UserPublicROSerializer(serializers.ModelSerializer):
+class UserPublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (

@@ -9,10 +9,10 @@ from rest_framework.status import HTTP_200_OK
 
 from apps.core.utils import paginated_response
 from apps.projects.models import Project
-from apps.projects.serializers import ProjectNameROSerializer
+from apps.projects.serializers import ProjectNameSerializer
 from .models import User
 from .permissions import IsAuthAndIsSelf
-from .serializers import UserPrivateSerializer, UserPublicROSerializer
+from .serializers import UserPrivateSerializer, UserPublicSerializer
 
 
 @extend_schema_view(
@@ -33,8 +33,8 @@ class UserViewSet(
         if self.action in ("me", "patch_me"):
             return UserPrivateSerializer
         if self.action == "projects":
-            return ProjectNameROSerializer
-        return UserPublicROSerializer
+            return ProjectNameSerializer
+        return UserPublicSerializer
 
     def get_permissions(self):
         if self.action in ("me", "patch_me"):
@@ -59,7 +59,7 @@ class UserViewSet(
         serializer.save()
         return Response(serializer.data, status=HTTP_200_OK)
 
-    @extend_schema(responses=ProjectNameROSerializer(many=True))
+    @extend_schema(responses=ProjectNameSerializer(many=True))
     @action(detail=True)
     def projects(self, request, pk=None, format=None):
         """Return short information about the user's projects."""

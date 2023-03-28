@@ -15,7 +15,7 @@ class ProfessionSerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class ParticipantROSerializer(serializers.ModelSerializer):
+class ParticipantSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(
         source="user", read_only=True, label="Идентификатор пользователя"
     )

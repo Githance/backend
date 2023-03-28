@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.users.serializers import UserShortROSerializer
+from apps.users.serializers import UserShortSerializer
 from .models import Project, ProjectStatus, ProjectType
 
 
@@ -16,7 +16,7 @@ class ProjectStatusSerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class ProjectNameROSerializer(serializers.ModelSerializer):
+class ProjectNameSerializer(serializers.ModelSerializer):
     status = serializers.SlugRelatedField(
         slug_field="name",
         read_only=True,
@@ -29,16 +29,16 @@ class ProjectNameROSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
-class ProjectIntroROSerializer(ProjectNameROSerializer):
+class ProjectIntroSerializer(ProjectNameSerializer):
     class Meta:
         model = Project
         fields = ("id", "name", "status", "intro")
         read_only_fields = fields
 
 
-class ProjectDetailROSerializer(ProjectIntroROSerializer):
+class ProjectDetailSerializer(ProjectIntroSerializer):
     types = ProjectTypeSerializer(many=True, read_only=True, label="Тип проекта")
-    owner = UserShortROSerializer(read_only=True, label="Пользователь")
+    owner = UserShortSerializer(read_only=True, label="Пользователь")
 
     class Meta:
         model = Project
@@ -51,4 +51,3 @@ class ProjectDetailROSerializer(ProjectIntroROSerializer):
             "status",
             "owner",
         )
-        read_only_fields = fields
