@@ -17,10 +17,9 @@ def validate_telegram_name(value):
 class EmailValidator(DjangoEmailValidator):
     # https://github.com/Githance/testing/issues/11
     # Removed %|/! characters to fix sending emails via Beget SMTP server.
+    # Removed regex part for quoted string validation.
     user_regex = _lazy_re_compile(
-        r"(^[-#$&'*+=?^_`{}~0-9A-Z]+(\.[-#$&'*+=?^_`{}~0-9A-Z]+)*\Z"
-        r"|^'([\001-\010\013\014\016-\037!#-\[\]-\177]|"
-        r"\\[\001-\011\013\014\016-\177])*'\Z)",
+        r"^[-#$&'*+=?^_`{}~0-9A-Z]+(\.[-#$&'*+=?^_`{}~0-9A-Z]+)*\Z",
         re.IGNORECASE,
     )
 
