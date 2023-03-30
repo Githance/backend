@@ -24,9 +24,12 @@ class EmailValidator(DjangoEmailValidator):
         r"^[-#$&'*+=?^_`{}~0-9A-Z]+(\.[-#$&'*+=?^_`{}~0-9A-Z]+)*\Z",
         re.IGNORECASE,
     )
+    # Punycode to exclude.
+    punycode = _lazy_re_compile(r"^xn--|\.xn--", re.IGNORECASE)
 
     # https://github.com/Githance/testing/issues/15
-    # Like the original __call__ , but it doesn't try to convert non-ASCII to punycode.
+    # Like the original __call__ , but it doesn't try to convert non-ASCII to punycode,
+    # nor does it accept an existing punycode.
     def __call__(self, value):
         if not value or "@" not in value:
             raise ValidationError(self.message, code=self.code, params={"value": value})
@@ -36,7 +39,8 @@ class EmailValidator(DjangoEmailValidator):
         if not self.user_regex.match(user_part):
             raise ValidationError(self.message, code=self.code, params={"value": value})
 
-        if domain_part not in self.domain_allowlist and not self.validate_domain_part(
-            domain_part
+        if domain_part not in self.domain_allowlist and (
+            self.punycode.match(domain_part)
+            or not self.validate_domain_part(domain_part)
         ):
             raise ValidationError(self.message, code=self.code, params={"value": value})
