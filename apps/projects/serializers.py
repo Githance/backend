@@ -4,7 +4,6 @@ from apps.users.serializers import UserShortSerializer
 from .models import Project
 
 
-# TODO изменить обязательные поля в модели Проект (участник, статус(?) и т.д.)
 class ProjectNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
