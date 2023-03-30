@@ -15,6 +15,8 @@ def validate_telegram_name(value):
 
 
 class EmailValidator(DjangoEmailValidator):
+    message = "Введите корректный адрес электронной почты"
+
     # https://github.com/Githance/testing/issues/11
     # Removed %|/! characters to fix sending emails via Beget SMTP server.
     # Removed regex part for quoted string validation.
