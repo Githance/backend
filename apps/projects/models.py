@@ -2,26 +2,18 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-from apps.core.models import BaseChoiceModel, BaseModel
+from apps.core.models import BaseModel
 
 User = get_user_model()
 
 
-class ProjectType(BaseChoiceModel):
-    class Meta:
-        verbose_name = "Тип проекта"
-        verbose_name_plural = "Типы проекта"
-        ordering = models.F("order").asc(nulls_last=True), "name"
-
-
-class ProjectStatus(BaseChoiceModel):
-    class Meta:
-        verbose_name = "Статус проекта"
-        verbose_name_plural = "Статусы проекта"
-        ordering = models.F("order").asc(nulls_last=True), "name"
-
-
 class Project(BaseModel):
+    class Status(models.TextChoices):
+        IDEA = ("idea", "идея")
+        VACANCY = ("vacancy", "идет набор")
+        IN_PROGRESS = ("in_progress", "в процессе")
+        CLOSED = ("closed", "закрыт")
+
     name = models.CharField(
         "Название",
         max_length=32,
@@ -32,17 +24,11 @@ class Project(BaseModel):
         verbose_name="Владелец",
         related_name="own_projects",
     )
-    types = models.ManyToManyField(
-        ProjectType,
-        through="ProjectTypeProject",
-        verbose_name="Типы проекта",
-        related_name="projects",
-    )
-    status = models.ForeignKey(
-        ProjectStatus,
-        on_delete=models.RESTRICT,
+    status = models.CharField(
+        choices=Status.choices,
         verbose_name="Статус",
-        related_name="projects",
+        max_length=20,
+        default=Status.IDEA,
     )
     intro = models.CharField(
         "Краткое описание",
@@ -51,6 +37,8 @@ class Project(BaseModel):
     description = models.CharField(
         "Подробное описание",
         max_length=2000,
+        null=True,
+        blank=True,
     )
     last_top_at = models.DateTimeField(
         "В топе последний раз",
@@ -63,25 +51,3 @@ class Project(BaseModel):
 
     def __str__(self):
         return self.name
-
-
-class ProjectTypeProject(models.Model):
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        verbose_name="Проект",
-    )
-    type = models.ForeignKey(
-        ProjectType,
-        on_delete=models.RESTRICT,
-        verbose_name="Тип проекта",
-    )
-
-    class Meta:
-        verbose_name = "тип проекта"
-        verbose_name_plural = "Типы проекта"
-        constraints = [
-            models.UniqueConstraint(
-                fields=("project", "type"), name="unique_project_type"
-            )
-        ]

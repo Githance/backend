@@ -7,14 +7,9 @@ from rest_framework.status import HTTP_200_OK
 from apps.core.utils import paginated_response
 from apps.participants.models import Participant
 from apps.participants.serializers import ParticipantSerializer
-from .models import Project, ProjectStatus, ProjectType
+from .models import Project
 from .permissions import IsOwnerOrReadOnly
-from .serializers import (
-    ProjectDetailSerializer,
-    ProjectIntroSerializer,
-    ProjectStatusSerializer,
-    ProjectTypeSerializer,
-)
+from .serializers import ProjectDetailSerializer, ProjectIntroSerializer
 
 
 # TODO uncompleted ProjectViewSet
@@ -23,10 +18,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
     lookup_value_regex = r"[0-9]+"
 
     def get_serializer_class(self):
-        if self.action == "statuses":
-            return ProjectStatusSerializer
-        if self.action == "types":
-            return ProjectTypeSerializer
         if self.action == "list":
             return ProjectIntroSerializer
         if self.action == "participants":
@@ -34,14 +25,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return ProjectDetailSerializer
 
     def get_queryset(self):
-        if self.action == "statuses":
-            return ProjectStatus.objects.all()
-        if self.action == "types":
-            return ProjectType.objects.all()
         if self.action == "retrieve":
-            return Project.objects.select_related("owner", "status").prefetch_related(
-                "types"
-            )
+            return Project.objects.select_related("owner")
         if self.action == "participants":
             return Participant.objects.select_related(
                 "user", "profession", "access_level"
@@ -49,21 +34,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return Project.objects.all()
 
     def get_permissions(self):
-        if self.action in ("statuses", "types", "participants"):
+        if self.action == "participants":
             return (AllowAny(),)
         return (IsOwnerOrReadOnly(),)
-
-    @extend_schema(responses=ProjectStatusSerializer(many=True))
-    @action(detail=False, pagination_class=None)
-    def statuses(self, format=None):
-        """Return a list of all possible project' statuses."""
-        return super().list(self.request)
-
-    @extend_schema(responses=ProjectTypeSerializer(many=True))
-    @action(detail=False, pagination_class=None)
-    def types(self, format=None):
-        """Return a list of all possible projects' types."""
-        return super().list(self.request)
 
     @extend_schema(responses=ParticipantSerializer(many=True))
     @action(detail=True)

@@ -65,7 +65,8 @@ class UserViewSet(
         """Return short information about the user's projects."""
         queryset = (
             self.get_queryset()
-            .select_related("status")
             .filter(Q(participants__user__pk=pk) | Q(owner=pk))
+            .order_by("-last_top_at")
+            .distinct()
         )
         return paginated_response(self, queryset, status=HTTP_200_OK)
