@@ -32,7 +32,7 @@ class RegisterSerializer(DjRestAuthRegisterSerializer):
         max_length=38,
         min_length=1,
     )
-    email = serializers.EmailField(
+    email = serializers.CharField(
         required=True,
         max_length=254,
         validators=(EmailValidator(),),
