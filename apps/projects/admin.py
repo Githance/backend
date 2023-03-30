@@ -2,22 +2,12 @@ from django.contrib import admin
 
 from apps.core.admin import BaseChoiceAdmin
 from apps.participants.models import Participant
-from .models import Project, ProjectStatus, ProjectType, ProjectTypeProject
+from .models import Project, ProjectStatus
 
 
 @admin.register(ProjectStatus)
 class ProjectStatusAdmin(BaseChoiceAdmin):
     pass
-
-
-@admin.register(ProjectType)
-class ProjectTypeAdmin(BaseChoiceAdmin):
-    pass
-
-
-class ProjectTypeInline(admin.TabularInline):
-    model = ProjectTypeProject
-    extra = 0
 
 
 class ParticipantInline(admin.TabularInline):
@@ -27,4 +17,4 @@ class ParticipantInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    inlines = (ParticipantInline, ProjectTypeInline)
+    inlines = (ParticipantInline,)

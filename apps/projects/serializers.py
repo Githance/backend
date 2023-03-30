@@ -1,13 +1,7 @@
 from rest_framework import serializers
 
 from apps.users.serializers import UserShortSerializer
-from .models import Project, ProjectStatus, ProjectType
-
-
-class ProjectTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectType
-        fields = ("id", "name")
+from .models import Project, ProjectStatus
 
 
 class ProjectStatusSerializer(serializers.ModelSerializer):
@@ -37,7 +31,6 @@ class ProjectIntroSerializer(ProjectNameSerializer):
 
 
 class ProjectDetailSerializer(ProjectIntroSerializer):
-    types = ProjectTypeSerializer(many=True, read_only=True, label="Тип проекта")
     owner = UserShortSerializer(read_only=True, label="Пользователь")
 
     class Meta:
@@ -47,7 +40,6 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
             "name",
             "intro",
             "description",
-            "types",
             "status",
             "owner",
         )

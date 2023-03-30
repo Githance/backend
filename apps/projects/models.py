@@ -7,13 +7,6 @@ from apps.core.models import BaseChoiceModel, BaseModel
 User = get_user_model()
 
 
-class ProjectType(BaseChoiceModel):
-    class Meta:
-        verbose_name = "Тип проекта"
-        verbose_name_plural = "Типы проекта"
-        ordering = models.F("order").asc(nulls_last=True), "name"
-
-
 class ProjectStatus(BaseChoiceModel):
     class Meta:
         verbose_name = "Статус проекта"
@@ -31,12 +24,6 @@ class Project(BaseModel):
         on_delete=models.RESTRICT,
         verbose_name="Владелец",
         related_name="own_projects",
-    )
-    types = models.ManyToManyField(
-        ProjectType,
-        through="ProjectTypeProject",
-        verbose_name="Типы проекта",
-        related_name="projects",
     )
     status = models.ForeignKey(
         ProjectStatus,
@@ -63,25 +50,3 @@ class Project(BaseModel):
 
     def __str__(self):
         return self.name
-
-
-class ProjectTypeProject(models.Model):
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        verbose_name="Проект",
-    )
-    type = models.ForeignKey(
-        ProjectType,
-        on_delete=models.RESTRICT,
-        verbose_name="Тип проекта",
-    )
-
-    class Meta:
-        verbose_name = "тип проекта"
-        verbose_name_plural = "Типы проекта"
-        constraints = [
-            models.UniqueConstraint(
-                fields=("project", "type"), name="unique_project_type"
-            )
-        ]
