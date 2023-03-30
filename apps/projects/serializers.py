@@ -1,22 +1,11 @@
 from rest_framework import serializers
 
 from apps.users.serializers import UserShortSerializer
-from .models import Project, ProjectStatus
+from .models import Project
 
 
-class ProjectStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectStatus
-        fields = ("id", "name")
-
-
+# TODO изменить обязательные поля в модели Проект (участник, статус(?) и т.д.)
 class ProjectNameSerializer(serializers.ModelSerializer):
-    status = serializers.SlugRelatedField(
-        slug_field="name",
-        read_only=True,
-        label="Статус",
-    )
-
     class Meta:
         model = Project
         fields = ("id", "name", "status")
