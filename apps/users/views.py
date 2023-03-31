@@ -66,6 +66,7 @@ class UserViewSet(
         queryset = (
             self.get_queryset()
             .filter(Q(participants__user__pk=pk) | Q(owner=pk))
+            .filter(deleted_at__isnull=True)
             .order_by("-last_top_at")
             .distinct()
         )
