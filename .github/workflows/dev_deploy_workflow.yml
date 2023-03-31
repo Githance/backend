@@ -35,7 +35,7 @@ jobs:
         isort --check .
         black --check .
         flake8 .
-        python manage.py makemigrations --settings config.settings.dev --check
+        python manage.py makemigrations --settings config.settings.dev --check --dry-run
 
   delivery-new-build:
     name: Delivery new build

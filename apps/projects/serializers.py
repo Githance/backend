@@ -30,4 +30,20 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
             "description",
             "status",
             "owner",
+            "telegram",
+            "email",
         )
+
+    def create(self, validated_data):
+        return Project.objects.create(
+            **validated_data, owner=self.context["request"].user
+        )
+
+    def validate_name(self, value):
+        """Check constraint for uniqueness violation (owner, name)."""
+        if Project.objects.filter(
+            name=value,
+            owner=self.context["request"].user,
+        ).exists():
+            raise serializers.ValidationError("У вас уже есть проект с таким названием")
+        return value

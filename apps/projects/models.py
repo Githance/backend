@@ -15,6 +15,7 @@ class Project(BaseModel):
         VACANCY = ("vacancy", "идет набор")
         IN_PROGRESS = ("in_progress", "в процессе")
         CLOSED = ("closed", "закрыт")
+
     name = models.CharField(
         "Название",
         max_length=32,
@@ -64,6 +65,9 @@ class Project(BaseModel):
     class Meta:
         verbose_name = "Проект"
         verbose_name_plural = "Проекты"
+        constraints = [
+            models.UniqueConstraint(fields=("owner", "name"), name="unique_project")
+        ]
 
     def __str__(self):
         return self.name
