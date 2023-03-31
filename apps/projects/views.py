@@ -14,7 +14,7 @@ from .serializers import ProjectDetailSerializer, ProjectIntroSerializer
 
 # TODO uncompleted ProjectViewSet
 class ProjectViewSet(viewsets.ModelViewSet):
-    http_method_names = ("get",)  # temporary
+    http_method_names = ("get", "post")  # temporary
     lookup_value_regex = r"[0-9]+"
 
     def get_serializer_class(self):

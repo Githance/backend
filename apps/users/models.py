@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .validators import EmailValidator, validate_telegram_name
+from apps.core.validators import EmailValidator, validate_telegram_name
 
 
 class User(AbstractBaseUser, PermissionsMixin):
