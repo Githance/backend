@@ -60,5 +60,5 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
             and Project.objects.filter(owner=self.instance.owner, name=value).exists()
         ):
             raise serializers.ValidationError(
-                "У пользователя не может быть двух проектов с одинаковым названием"
+                "Пользователь не может владеть двумя проектами с одинаковыми названиями"
             )

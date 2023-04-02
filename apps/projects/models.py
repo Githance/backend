@@ -66,7 +66,11 @@ class Project(BaseModel):
         verbose_name = "Проект"
         verbose_name_plural = "Проекты"
         constraints = [
-            models.UniqueConstraint(fields=("owner", "name"), name="unique_project")
+            models.UniqueConstraint(
+                fields=("owner", "name"),
+                condition=models.Q(deleted_at__isnull=True),
+                name="not_deleted_unique_project",
+            )
         ]
 
     def __str__(self):
