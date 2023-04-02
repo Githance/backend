@@ -1,3 +1,5 @@
+from corsheaders.defaults import default_headers
+
 from .base import *  # noqa: F403,F401
 
 DEBUG = True
@@ -9,6 +11,12 @@ SIMPLE_JWT.update(
         )
     }
 )
+
+# Allow setting cookie on http:// from https:// server
+CORS_ALLOW_HEADERS = [*default_headers, "credentials"]
+CORS_ALLOW_CREDENTIALS = True
+JWT_AUTH_SAMESITE = "None"
+
 
 # -------------------------------- DJANGO DEBUG TOOLBAR --------------------------------
 
