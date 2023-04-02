@@ -225,7 +225,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# custom parameter to apps.authentication.serializers.SocialLoginSerializer
+# Custom parameter to apps.authentication.serializers.SocialLoginSerializer
 ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000 = env.bool(
     "DJANGO_ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000", False
 )
