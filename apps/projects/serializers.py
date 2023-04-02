@@ -34,11 +34,6 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
             "email",
         )
 
-    def create(self, validated_data):
-        return Project.objects.create(
-            **validated_data, owner=self.context["request"].user
-        )
-
     def validate_name(self, value):
         """Check constraint for uniqueness violation (owner, name)."""
         action = self.context["view"].action
@@ -50,14 +45,16 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
 
     def _validate_name_create(self, value):
         if Project.objects.filter(
-            owner=self.context["request"].user, name=value
+            deleted_at__isnull=True, owner=self.context["request"].user, name=value
         ).exists():
             raise serializers.ValidationError("У вас уже есть проект с таким названием")
 
     def _validate_name_update(self, value):
         if (
             self.instance.name != value
-            and Project.objects.filter(owner=self.instance.owner, name=value).exists()
+            and Project.objects.filter(
+                deleted_at__isnull=True, owner=self.instance.owner, name=value
+            ).exists()
         ):
             raise serializers.ValidationError(
                 "Пользователь не может владеть двумя проектами с одинаковыми названиями"

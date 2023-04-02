@@ -48,6 +48,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return (AllowAny(),)
         return (IsOwnerOrReadOnly(),)
 
+    def perform_create(self, serializer):
+        return serializer.save(owner=self.request.user)
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance.deleted_at:
