@@ -23,9 +23,6 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", [])
 # https://pypi.org/project/django-cors-headers/
 CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", [])
 
-# https://docs.djangoproject.com/en/3.2/ref/settings/#use-x-forwarded-host
-USE_X_FORWARDED_HOST = True
-
 # https://docs.djangoproject.com/en/3.2/ref/settings/#secure-proxy-ssl-header
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -228,7 +225,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# custom parameter to apps.authentication.serializers.SocialLoginSerializer
+# Custom parameter to apps.authentication.serializers.SocialLoginSerializer
 ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000 = env.bool(
     "DJANGO_ALLOW_GOOGLE_CODE_FROM_LOCALHOST_3000", False
 )
