@@ -1,5 +1,3 @@
-from django.http import Http404
-from django.shortcuts import get_object_or_404
 from django.utils.html import format_html
 from rest_framework import status
 from rest_framework.response import Response
@@ -25,13 +23,3 @@ def paginated_response(viewset, queryset, status=status.HTTP_200_OK):
         return viewset.get_paginated_response(serializer.data)
     serializer = viewset.get_serializer(queryset, many=True)
     return Response(serializer.data, status=status)
-
-
-def _404_if_marked_as_deleted(model, pk):
-    """
-    Raise a 404 error if the object doesn't exist or has a `delete_at` attribute filled.
-
-    Good in ViewSet for @action methods with detail=True.
-    """
-    if get_object_or_404(model, pk=pk).deleted_at:
-        raise Http404

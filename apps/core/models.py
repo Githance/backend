@@ -1,5 +1,7 @@
 from django.db import models
 
+from .managers import VisibleQuerySet
+
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(
@@ -11,6 +13,8 @@ class BaseModel(models.Model):
         null=True,
         blank=True,
     )
+
+    objects = VisibleQuerySet.as_manager()
 
     class Meta:
         abstract = True
