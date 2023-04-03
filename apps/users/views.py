@@ -26,7 +26,7 @@ class UserViewSet(
 
     def get_queryset(self):
         if self.action == "projects":
-            return Project.objects.all()
+            return Project.objects.visible()
         return User.objects.all()
 
     def get_serializer_class(self):
@@ -66,7 +66,6 @@ class UserViewSet(
         queryset = (
             self.get_queryset()
             .filter(Q(participants__user__pk=pk) | Q(owner=pk))
-            .filter(deleted_at__isnull=True)
             .order_by("-last_top_at")
             .distinct()
         )
