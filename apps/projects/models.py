@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils import timezone
 
 from apps.core.models import BaseModel
+from apps.core.validators import EmailValidator, validate_telegram_name
 
 User = get_user_model()
 
@@ -40,6 +42,21 @@ class Project(BaseModel):
         null=True,
         blank=True,
     )
+    # telegram username is stored without '@'
+    telegram = models.CharField(
+        verbose_name="Телеграм",
+        null=True,
+        blank=True,
+        max_length=32,
+        validators=(MinLengthValidator(5), validate_telegram_name),
+    )
+    email = models.EmailField(
+        verbose_name="Email",
+        max_length=254,
+        null=True,
+        blank=True,
+        validators=(EmailValidator(),),
+    )
     last_top_at = models.DateTimeField(
         "В топе последний раз",
         default=timezone.now,
@@ -48,6 +65,13 @@ class Project(BaseModel):
     class Meta:
         verbose_name = "Проект"
         verbose_name_plural = "Проекты"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("owner", "name"),
+                condition=models.Q(deleted_at__isnull=True),
+                name="not_deleted_unique_project",
+            )
+        ]
 
     def __str__(self):
         return self.name

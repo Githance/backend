@@ -10,7 +10,7 @@ from django.contrib.auth import settings
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
-from apps.users.validators import EmailValidator
+from apps.core.validators import EmailValidator
 
 
 class LoginAccessTokenSerializer(serializers.Serializer):

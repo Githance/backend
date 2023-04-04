@@ -1,6 +1,6 @@
 from django.utils.html import format_html
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
 
 
 def form_safe_link(url, text=None):
@@ -9,7 +9,7 @@ def form_safe_link(url, text=None):
     return format_html("<a href='{url}'>{text}</a>", url=url, text=text)
 
 
-def paginated_response(viewset, queryset, status=HTTP_200_OK):
+def paginated_response(viewset, queryset, status=status.HTTP_200_OK):
     """
     Return paginating response.
 

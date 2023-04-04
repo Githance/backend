@@ -10,7 +10,7 @@ check:
 	isort --check --skip-gitignore .
 	black --check .
 	flake8 .
-	python manage.py makemigrations --check
+	python manage.py makemigrations --check --dry-run
 
 format:
 	isort --skip-gitignore .

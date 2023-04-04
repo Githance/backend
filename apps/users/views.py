@@ -26,7 +26,7 @@ class UserViewSet(
 
     def get_queryset(self):
         if self.action == "projects":
-            return Project.objects.all()
+            return Project.objects.visible()
         return User.objects.all()
 
     def get_serializer_class(self):
