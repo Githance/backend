@@ -8,9 +8,9 @@ from rest_framework.response import Response
 from apps.core.utils import paginated_response
 from apps.participants.models import Participant
 from apps.participants.serializers import ParticipantSerializer
-from .models import Project
+from .models import Project, Vacancy
 from .permissions import IsOwnerOrReadOnly
-from .serializers import ProjectDetailSerializer, ProjectIntroSerializer
+from .serializers import ProjectDetailSerializer, ProjectIntroSerializer, VacancySerializer
 
 
 # TODO uncompleted ProjectViewSet
@@ -63,3 +63,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
         Project.objects.visible().get_or_404(pk=pk)
         queryset = self.get_queryset().filter(project__pk=pk)
         return paginated_response(self, queryset, status=status.HTTP_200_OK)
+
+
+class VacancyViewSet(viewsets.ModelViewSet):
+    http_method_names = ("get", "post", "patch", "delete", "head", "options")
+    lookup_value_regex = r"[0-9]+"
+    serializer_class = VacancySerializer
+

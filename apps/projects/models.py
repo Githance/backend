@@ -75,3 +75,34 @@ class Project(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class Vacancy(BaseModel):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        verbose_name="Проект",
+        related_name="vacancies",
+    )
+    profession = models.ForeignKey(
+        "participants.Profession",
+        on_delete=models.CASCADE,
+        verbose_name="Профессия",
+        related_name="vacancies",
+    )
+    description = models.CharField(
+        "Подробное описание",
+        max_length=2000,
+        null=True,
+        blank=True,
+    )
+    is_published = models.BooleanField(
+        verbose_name="Опубликована",
+    )
+
+    class Meta:
+        verbose_name = "Вакансия"
+        verbose_name_plural = "Вакансии"
+
+    def __str__(self):
+        return self.profession
