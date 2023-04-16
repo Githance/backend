@@ -1,28 +1,35 @@
-from django.utils import timezone
 from drf_spectacular.utils import extend_schema
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from apps.core.utils import paginated_response
+from apps.core.views import CoreModelViewSet, RetrieveUpdateDestroyListModelViewSet
 from apps.participants.models import Participant
 from apps.participants.serializers import ParticipantSerializer
-from .models import Project, Vacancy
+from .models import Project
 from .permissions import IsOwnerOrReadOnly
-from .serializers import ProjectDetailSerializer, ProjectIntroSerializer, VacancySerializer
+from .serializers import (
+    ProjectDetailSerializer,
+    ProjectIntroSerializer,
+    VacancySerializer,
+)
 
 
 # TODO uncompleted ProjectViewSet
-class ProjectViewSet(viewsets.ModelViewSet):
+class ProjectViewSet(CoreModelViewSet):
     http_method_names = ("get", "post", "patch", "delete", "head", "options")
     lookup_value_regex = r"[0-9]+"
+    serializers_map = {
+        "list": ProjectIntroSerializer,
+        "participants": ParticipantSerializer,
+        "vacancies": VacancySerializer,
+    }
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return ProjectIntroSerializer
-        if self.action == "participants":
-            return ParticipantSerializer
+        if self.action in ProjectViewSet.serializers_map:
+            return ProjectViewSet.serializers_map[self.action]
         return ProjectDetailSerializer
 
     def get_queryset(self):
@@ -48,14 +55,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(owner=self.request.user)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if not instance.deleted_at:
-            instance.deleted_at = timezone.now()
-            instance.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
     @extend_schema(responses=ParticipantSerializer(many=True))
     @action(detail=True)
     def participants(self, request, pk=None, format=None):
@@ -64,9 +63,21 @@ class ProjectViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(project__pk=pk)
         return paginated_response(self, queryset, status=status.HTTP_200_OK)
 
+    @extend_schema(responses=VacancySerializer(many=True))
+    @action(["get", "post"], detail=True)
+    def vacancies(self, request, pk):
+        project = Project.objects.visible().get_or_404(pk=pk)
 
-class VacancyViewSet(viewsets.ModelViewSet):
-    http_method_names = ("get", "post", "patch", "delete", "head", "options")
+        if request.method == "POST":
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        queryset = project.vacancies.select_related("project", "profession")
+        return paginated_response(self, queryset, status=status.HTTP_200_OK)
+
+
+class VacancyViewSet(RetrieveUpdateDestroyListModelViewSet):
     lookup_value_regex = r"[0-9]+"
     serializer_class = VacancySerializer
-

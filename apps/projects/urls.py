@@ -5,6 +5,7 @@ from .views import ProjectViewSet
 
 router = DefaultRouter()
 router.register("projects", ProjectViewSet, basename="project")
+router.register("vacancies", ProjectViewSet, basename="vacancy")
 
 v1_urls = [
     path("v1/", include(router.urls)),

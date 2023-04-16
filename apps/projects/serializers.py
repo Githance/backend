@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.participants.serializers import ProfessionSerializer
 from apps.users.serializers import UserShortSerializer
 from .models import Project, Vacancy
 
@@ -65,6 +66,7 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
 
 class VacancySerializer(serializers.ModelSerializer):
     project = ProjectNameSerializer(read_only=True)
+    profession = ProfessionSerializer()
 
     class Meta:
         model = Vacancy
