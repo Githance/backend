@@ -1,5 +1,6 @@
+from django.forms.models import model_to_dict
 from rest_framework import serializers
-
+from rest_framework.generics import get_object_or_404
 from .models import AccessLevel, Participant, Profession
 
 
@@ -10,6 +11,13 @@ class AccessLevelSerializer(serializers.ModelSerializer):
 
 
 class ProfessionSerializer(serializers.ModelSerializer):
+
+    def to_internal_value(self, data):
+        if isinstance(data, int):
+            obj = get_object_or_404(Profession, id=data)
+            data = model_to_dict(obj)
+        return super().to_internal_value(data)
+
     class Meta:
         model = Profession
         fields = ("id", "name")
