@@ -16,4 +16,6 @@ class VisibleQuerySet(models.QuerySet):
 
     def get_or_404(self, pk):
         """Return one 'visible' object or raise 404 HTTP error if it doesn't exist."""
+        # TODO: Написано "Return one 'visible' object", а возвращает все,
+        # TODO: наверное должно быть по-другому? но тогда b вызовы надо править
         return get_object_or_404(self, pk=pk)

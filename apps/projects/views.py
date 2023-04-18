@@ -8,8 +8,8 @@ from apps.core.utils import paginated_response
 from apps.core.views import CoreModelViewSet, RetrieveUpdateDestroyListModelViewSet
 from apps.participants.models import Participant
 from apps.participants.serializers import ParticipantSerializer
-from .models import Project
-from .permissions import IsOwnerOrReadOnly
+from .models import Project, Vacancy
+from .permissions import IsOwnerOrReadOnly, IsProjectOwnerOrReadOnly
 from .serializers import (
     ProjectDetailSerializer,
     ProjectIntroSerializer,
@@ -71,13 +71,15 @@ class ProjectViewSet(CoreModelViewSet):
         if request.method == "POST":
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            serializer.save()
+            serializer.save(project=project)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        queryset = project.vacancies.select_related("project", "profession")
+        queryset = project.vacancies.visible().select_related("project", "profession")
         return paginated_response(self, queryset, status=status.HTTP_200_OK)
 
 
 class VacancyViewSet(RetrieveUpdateDestroyListModelViewSet):
     lookup_value_regex = r"[0-9]+"
     serializer_class = VacancySerializer
+    permission_classes = (IsProjectOwnerOrReadOnly,)
+    queryset = Vacancy.objects.visible().select_related("project", "profession")

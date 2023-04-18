@@ -103,6 +103,7 @@ class Vacancy(BaseModel):
     class Meta:
         verbose_name = "Вакансия"
         verbose_name_plural = "Вакансии"
+        ordering = ordering = ("-created_at",)
 
     def __str__(self):
         return self.profession

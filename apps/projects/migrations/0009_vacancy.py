@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='projects.project', verbose_name='Проект')),
             ],
             options={
+                'ordering': ('-created_at',),
                 'verbose_name': 'Вакансия',
                 'verbose_name_plural': 'Вакансии',
             },
