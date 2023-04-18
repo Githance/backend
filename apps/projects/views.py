@@ -80,6 +80,7 @@ class ProjectViewSet(CoreModelViewSet):
 
 class VacancyViewSet(RetrieveUpdateDestroyListModelViewSet):
     lookup_value_regex = r"[0-9]+"
+    http_method_names = ("get", "post", "patch", "delete", "head", "options")
     serializer_class = VacancySerializer
     permission_classes = (IsProjectOwnerOrReadOnly,)
     queryset = Vacancy.objects.visible().select_related("project", "profession")
