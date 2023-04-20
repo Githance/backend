@@ -16,6 +16,7 @@ SIMPLE_JWT.update(
 CORS_ALLOW_HEADERS = [*default_headers, "credentials"]
 CORS_ALLOW_CREDENTIALS = True
 JWT_AUTH_SAMESITE = "None"
+JWT_AUTH_SECURE = False
 
 
 # -------------------------------- DJANGO DEBUG TOOLBAR --------------------------------
