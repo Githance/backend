@@ -15,7 +15,8 @@ SIMPLE_JWT.update(
 # Allow setting cookie on http:// from https:// server
 CORS_ALLOW_HEADERS = [*default_headers, "credentials"]
 CORS_ALLOW_CREDENTIALS = True
-JWT_AUTH_SAMESITE = "None"
+JWT_AUTH_SAMESITE = "Strict"
+JWT_AUTH_SECURE = False
 
 
 # -------------------------------- DJANGO DEBUG TOOLBAR --------------------------------
