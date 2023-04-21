@@ -86,7 +86,7 @@ class Vacancy(BaseModel):
     )
     profession = models.ForeignKey(
         "participants.Profession",
-        on_delete=models.CASCADE,
+        on_delete=models.RESTRICT,
         verbose_name="Профессия",
         related_name="vacancies",
     )
@@ -98,12 +98,13 @@ class Vacancy(BaseModel):
     )
     is_published = models.BooleanField(
         verbose_name="Опубликована",
+        default=False
     )
 
     class Meta:
         verbose_name = "Вакансия"
         verbose_name_plural = "Вакансии"
-        ordering = ordering = ("-created_at",)
+        ordering = ("-created_at",)
 
     def __str__(self):
         return self.profession

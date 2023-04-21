@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 
 class DeletionMarkModelMixin(mixins.DestroyModelMixin):
-    """Sets the deleted at mark instead of destroying."""
+    """Set the deleted_at mark instead of destroying."""
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

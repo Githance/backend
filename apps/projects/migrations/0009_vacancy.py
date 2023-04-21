@@ -19,8 +19,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Время создания')),
                 ('deleted_at', models.DateTimeField(blank=True, null=True, verbose_name='Время удаления')),
                 ('description', models.CharField(blank=True, max_length=2000, null=True, verbose_name='Подробное описание')),
-                ('is_published', models.BooleanField(verbose_name='Опубликована')),
-                ('profession', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='participants.profession', verbose_name='Профессия')),
+                ('is_published', models.BooleanField(default=False, verbose_name='Опубликована')),
+                ('profession', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='vacancies', to='participants.profession', verbose_name='Профессия')),
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='projects.project', verbose_name='Проект')),
             ],
             options={
