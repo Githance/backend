@@ -98,7 +98,7 @@ class Vacancy(BaseModel):
     )
     is_published = models.BooleanField(
         verbose_name="Опубликована",
-        default=False
+        default=False,
     )
 
     class Meta:
