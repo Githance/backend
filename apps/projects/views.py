@@ -59,14 +59,14 @@ class ProjectViewSet(CoreModelViewSet):
     @action(detail=True)
     def participants(self, request, pk=None, format=None):
         """Return a list of project participants except an owner."""
-        Project.objects.visible().get_or_404(pk=pk)
+        Project.objects.get_visible_or_404(pk=pk)
         queryset = self.get_queryset().filter(project__pk=pk)
         return paginated_response(self, queryset, status=status.HTTP_200_OK)
 
     @extend_schema(responses=VacancySerializer(many=True))
     @action(["get", "post"], detail=True)
     def vacancies(self, request, pk):
-        project = Project.objects.visible().get_or_404(pk=pk)
+        project = Project.objects.get_visible_or_404(pk=pk)
 
         if request.method == "POST":
             serializer = self.get_serializer(data=request.data)
