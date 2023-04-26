@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
+from apps.participants.serializers import ProfessionSerializer
 from apps.users.serializers import UserShortSerializer
-from .models import Project
+from .models import Project, Vacancy
 
 
 class ProjectNameSerializer(serializers.ModelSerializer):
@@ -61,3 +62,12 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
             raise serializers.ValidationError(
                 "Пользователь не может владеть двумя проектами с одинаковыми названиями"
             )
+
+
+class VacancySerializer(serializers.ModelSerializer):
+    project = ProjectNameSerializer(read_only=True)
+    profession = ProfessionSerializer()
+
+    class Meta:
+        model = Vacancy
+        fields = ("id", "project", "profession", "description", "is_published")

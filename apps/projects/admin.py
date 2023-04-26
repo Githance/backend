@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from apps.participants.models import Participant
 from .forms import ProjectModelForm
-from .models import Project
+from .models import Project, Vacancy
 
 
 class ParticipantInline(admin.TabularInline):
@@ -82,3 +82,8 @@ class ProjectAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("created_at", "status")
     inlines = (ParticipantInline,)
+
+
+@admin.register(Vacancy)
+class VacancyAdmin(admin.ModelAdmin):
+    pass
