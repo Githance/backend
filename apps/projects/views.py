@@ -13,12 +13,15 @@ from .permissions import IsOwnerOrReadOnly, IsProjectOwnerOrReadOnly
 from .serializers import (
     ProjectDetailSerializer,
     ProjectIntroSerializer,
+    VacancyCreateSerializer,
     VacancySerializer,
 )
 
 
 # TODO uncompleted ProjectViewSet
 class ProjectViewSet(CoreModelViewSet):
+    """Provide projects API."""
+
     http_method_names = ("get", "post", "patch", "delete", "head", "options")
     lookup_value_regex = r"[0-9]+"
     serializers_map = {
@@ -63,22 +66,37 @@ class ProjectViewSet(CoreModelViewSet):
         queryset = self.get_queryset().filter(project__pk=pk)
         return paginated_response(self, queryset, status=status.HTTP_200_OK)
 
-    @extend_schema(responses=VacancySerializer(many=True))
+    @extend_schema(
+        methods=["GET"],
+        responses=VacancySerializer(many=True),
+        description="Project's vacancies list.",
+    )
+    @extend_schema(
+        methods=["POST"],
+        request=VacancyCreateSerializer(),
+        responses=VacancySerializer(),
+        description="Create new vacancy in project.",
+    )
     @action(["get", "post"], detail=True)
     def vacancies(self, request, pk):
         project = Project.objects.get_visible_or_404(pk=pk)
 
         if request.method == "POST":
-            serializer = self.get_serializer(data=request.data)
+            serializer = VacancyCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            serializer.save(project=project)
+            vacancy = serializer.save(project=project)
+            serializer = self.get_serializer(instance=vacancy)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         queryset = project.vacancies.visible().select_related("project", "profession")
+        if request.user != project.owner:
+            queryset = queryset.filter(is_published=True)
         return paginated_response(self, queryset, status=status.HTTP_200_OK)
 
 
 class VacancyViewSet(RetrieveUpdateDestroyListModelViewSet):
+    """Provide vacancies API."""
+
     lookup_value_regex = r"[0-9]+"
     http_method_names = ("get", "patch", "delete", "head", "options")
     serializer_class = VacancySerializer

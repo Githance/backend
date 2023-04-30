@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.participants.models import Profession
 from apps.participants.serializers import ProfessionSerializer
 from apps.users.serializers import UserShortSerializer
 from .models import Project, Vacancy
@@ -67,6 +68,15 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
 class VacancySerializer(serializers.ModelSerializer):
     project = ProjectNameSerializer(read_only=True)
     profession = ProfessionSerializer()
+
+    class Meta:
+        model = Vacancy
+        fields = ("id", "project", "profession", "description", "is_published")
+
+
+class VacancyCreateSerializer(serializers.ModelSerializer):
+    project = ProjectNameSerializer(read_only=True)
+    profession = serializers.PrimaryKeyRelatedField(queryset=Profession.objects.all())
 
     class Meta:
         model = Vacancy
