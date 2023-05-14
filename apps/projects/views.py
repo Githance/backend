@@ -9,7 +9,7 @@ from apps.core.views import CoreModelViewSet, RetrieveUpdateDestroyListModelView
 from apps.participants.models import Participant
 from apps.participants.serializers import ParticipantSerializer
 from .models import Project, Vacancy
-from .permissions import IsOwnerOrReadOnly, IsVacancyEditor
+from .permissions import IsOwnerOrReadOnly, IsVacancyEditorOrReadOnly
 from .serializers import (
     ProjectDetailSerializer,
     ProjectIntroSerializer,
@@ -73,9 +73,11 @@ class ProjectViewSet(CoreModelViewSet):
         responses=VacancySerializer(),
         description="Create new vacancy in project.",
     )
-    @action(["get", "post"], detail=True, permission_classes=(IsVacancyEditor,))
+    @action(
+        ["get", "post"], detail=True, permission_classes=(IsVacancyEditorOrReadOnly,)
+    )
     def vacancies(self, request, pk):
-        project = Project.objects.get_visible_or_404(pk=pk)
+        project = self.get_object()
 
         if request.method == "POST":
             serializer = VacancyCreateSerializer(data=request.data)
@@ -96,8 +98,5 @@ class VacancyViewSet(RetrieveUpdateDestroyListModelViewSet):
     lookup_value_regex = r"[0-9]+"
     http_method_names = ("get", "patch", "delete", "head", "options")
     serializer_class = VacancySerializer
-    permission_classes = (IsVacancyEditor,)
+    permission_classes = (IsVacancyEditorOrReadOnly,)
     queryset = Vacancy.objects.visible().select_related("project", "profession")
-
-    def check_permissions(self, request):
-        pass
