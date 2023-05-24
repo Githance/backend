@@ -1,45 +1,55 @@
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticatedOrReadOnly
 
 from apps.participants.models import Participant
-from apps.projects.models import Project
 
 
 class ProjectPermission:
-    def _get_project(self, obj):
-        if isinstance(obj, Project):
-            return obj
-        return getattr(obj, "project", None)
+    def __init__(self, project, permissions=None):
+        self._project = project
+        if permissions:
+            self._permissions_kwargs = {
+                "access_level__" + permit: True for permit in permissions
+            }
 
-    def _is_project_owner(self, user, obj):
-        project = self._get_project(obj)
-        return bool(project and project.owner == user)
+    def is_project_owner(self, user):
+        return self._project.owner == user
 
-    def _check_access_level(self, user, obj, permissions):
-        project = self._get_project(obj)
-        if project is None:
+    def has_access(self, user):
+        if self.is_project_owner(user):
+            return True
+        if not hasattr(self, "_permissions_kwargs"):
             return False
-
-        permissions_kwargs = {"access_level__" + permit: True for permit in permissions}
         queryset = Participant.objects.visible().select_related("access_level")
         queryset = queryset.filter(
             user=user,
-            project=project,
-            **permissions_kwargs,
+            project=self._project,
+            **self._permissions_kwargs,
         )
         return queryset.exists()
 
 
-class IsOwnerOrReadOnly(IsAuthenticatedOrReadOnly, ProjectPermission):
-    def has_object_permission(self, request, view, obj):
+class IsProjectOwnerOrReadOnly(IsAuthenticatedOrReadOnly):
+    def has_object_permission(self, request, view, project):
         if request.method in SAFE_METHODS:
             return True
-        return self._is_project_owner(request.user, obj)
+        return ProjectPermission(project).is_project_owner(request.user)
 
 
-class IsVacancyEditorOrReadOnly(IsAuthenticatedOrReadOnly, ProjectPermission):
-    def has_object_permission(self, request, view, obj):
+class CanAddVacancyToProjectOrReadOnly(IsAuthenticatedOrReadOnly):
+    def has_object_permission(self, request, view, project):
         if request.method in SAFE_METHODS:
             return True
-        if self._is_project_owner(request.user, obj):
+        return ProjectPermission(
+            project=project,
+            permissions=("can_edit_vacancy",),
+        ).has_access(request.user)
+
+
+class CanEditVacancyOrReadOnly(IsAuthenticatedOrReadOnly):
+    def has_object_permission(self, request, view, vacancy):
+        if request.method in SAFE_METHODS:
             return True
-        return self._check_access_level(request.user, obj, ("vacancy_editing",))
+        return ProjectPermission(
+            project=vacancy.project,
+            permissions=("can_edit_vacancy",),
+        ).has_access(request.user)

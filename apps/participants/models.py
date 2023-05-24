@@ -5,8 +5,8 @@ from apps.projects.models import Project, User
 
 
 class AccessLevel(BaseChoiceModel):
-    vacancy_editing = models.BooleanField(
-        verbose_name="Право редактирования вакансий",
+    can_edit_vacancy = models.BooleanField(
+        verbose_name="Может редактировать вакансии",
         default=False,
     )
 
