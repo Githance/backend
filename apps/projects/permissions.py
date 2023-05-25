@@ -37,8 +37,6 @@ class IsProjectOwnerOrReadOnly(IsAuthenticatedOrReadOnly):
 
 class CanAddVacancyToProjectOrReadOnly(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, project):
-        if request.method in SAFE_METHODS:
-            return True
         return ProjectPermission(
             project=project,
             permissions=("can_edit_vacancy",),

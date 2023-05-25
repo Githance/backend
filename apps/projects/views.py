@@ -22,7 +22,6 @@ from .serializers import (
 )
 
 
-# TODO uncompleted ProjectViewSet
 class ProjectViewSet(CoreModelViewSet):
     """Provide projects API."""
 
