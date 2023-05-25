@@ -107,4 +107,4 @@ class Vacancy(BaseModel):
         ordering = ("-created_at",)
 
     def __str__(self):
-        return self.profession
+        return f"Вакансия на профессию {self.profession}"

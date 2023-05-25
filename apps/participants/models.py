@@ -5,6 +5,11 @@ from apps.projects.models import Project, User
 
 
 class AccessLevel(BaseChoiceModel):
+    can_edit_vacancy = models.BooleanField(
+        verbose_name="Может редактировать вакансии",
+        default=False,
+    )
+
     class Meta:
         verbose_name = "Уровень доступа"
         verbose_name_plural = "Уровни доступа"
