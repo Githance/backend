@@ -34,7 +34,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         blank=True,
         max_length=33,
-        validators=[validate_telegram_name],
+        validators=(validate_telegram_name,),
     )
     portfolio_url = models.URLField(
         verbose_name="Ссылка на портфолио",

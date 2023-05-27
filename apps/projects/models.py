@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils import timezone
 
@@ -42,13 +41,13 @@ class Project(BaseModel):
         null=True,
         blank=True,
     )
-    # telegram username is stored without '@'
+    # telegram username is stored with '@'
     telegram = models.CharField(
         verbose_name="Телеграм",
         null=True,
         blank=True,
-        max_length=32,
-        validators=(MinLengthValidator(5), validate_telegram_name),
+        max_length=33,
+        validators=(validate_telegram_name,),
     )
     email = models.EmailField(
         verbose_name="Email",

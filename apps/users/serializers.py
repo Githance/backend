@@ -27,10 +27,10 @@ class UserPublicSerializer(serializers.ModelSerializer):
 
 class UserPrivateSerializer(serializers.ModelSerializer):
     telegram = serializers.CharField(
-        label="Телеграм",
         allow_blank=True,
         allow_null=True,
-        validators=[validate_telegram_name],
+        validators=(validate_telegram_name,),
+        label="Телеграм",
     )
 
     class Meta:

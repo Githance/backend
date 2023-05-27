@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.core.validators import validate_telegram_name
 from apps.participants.models import Profession
 from apps.participants.serializers import ProfessionSerializer
 from apps.users.serializers import UserShortSerializer
@@ -21,7 +22,16 @@ class ProjectIntroSerializer(ProjectNameSerializer):
 
 
 class ProjectDetailSerializer(ProjectIntroSerializer):
-    owner = UserShortSerializer(read_only=True, label="Пользователь")
+    owner = UserShortSerializer(
+        read_only=True,
+        label="Пользователь",
+    )
+    telegram = serializers.CharField(
+        allow_blank=True,
+        allow_null=True,
+        validators=(validate_telegram_name,),
+        label="Телеграм",
+    )
 
     class Meta:
         model = Project
@@ -35,6 +45,11 @@ class ProjectDetailSerializer(ProjectIntroSerializer):
             "telegram",
             "email",
         )
+
+    def validate_telegram(self, value):
+        if value is not None and not value.startswith("@"):
+            value = "@" + value
+        return value
 
     def validate_name(self, value):
         """Check constraint for uniqueness violation (owner, name)."""
