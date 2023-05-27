@@ -45,7 +45,7 @@ class EmailValidator(DjangoEmailValidator):
             raise ValidationError(self.message, code=self.code, params={"value": value})
 
         if domain_part not in self.domain_allowlist and (
-            self.punycode.match(domain_part)
+            self.punycode.search(domain_part)
             or not self.validate_domain_part(domain_part)
         ):
             raise ValidationError(self.message, code=self.code, params={"value": value})
