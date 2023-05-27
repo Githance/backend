@@ -1,7 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
-from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -29,13 +28,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         max_length=1000,
     )
-    # telegram username is stored without '@'
+    # telegram username is stored with '@'
     telegram = models.CharField(
         verbose_name="Телеграм",
         null=True,
         blank=True,
-        max_length=32,
-        validators=[MinLengthValidator(5), validate_telegram_name],
+        max_length=33,
+        validators=[validate_telegram_name],
     )
     portfolio_url = models.URLField(
         verbose_name="Ссылка на портфолио",
