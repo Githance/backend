@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.core.fields import TelegramField
+from apps.core.validators import validate_telegram_name
 from apps.participants.models import Profession
 from apps.participants.serializers import ProfessionSerializer
 from apps.users.serializers import UserShortSerializer
@@ -21,7 +23,15 @@ class ProjectIntroSerializer(ProjectNameSerializer):
 
 
 class ProjectDetailSerializer(ProjectIntroSerializer):
-    owner = UserShortSerializer(read_only=True, label="Пользователь")
+    owner = UserShortSerializer(
+        read_only=True,
+        label="Пользователь",
+    )
+    telegram = TelegramField(
+        allow_blank=True,
+        allow_null=True,
+        validators=(validate_telegram_name,),
+    )
 
     class Meta:
         model = Project

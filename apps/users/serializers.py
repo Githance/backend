@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.core.fields import TelegramField
+from apps.core.validators import validate_telegram_name
 from .models import User
 
 
@@ -25,6 +27,12 @@ class UserPublicSerializer(serializers.ModelSerializer):
 
 
 class UserPrivateSerializer(serializers.ModelSerializer):
+    telegram = TelegramField(
+        allow_blank=True,
+        allow_null=True,
+        validators=(validate_telegram_name,),
+    )
+
     class Meta:
         model = User
         fields = (
