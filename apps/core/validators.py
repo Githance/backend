@@ -6,16 +6,11 @@ from django.utils.regex_helper import _lazy_re_compile
 
 
 def validate_telegram_name(value):
-    message = "Общей длинной от 6 до 33"
-
-    if not value.startswith("@"):
-        value = "@" + value
-        message = "Общей длинной от 5 до 32"
-
     regex = re.compile(r"^@[a-z][a-z0-9_]{3,30}[a-z0-9]$", flags=re.IGNORECASE)
     if not regex.search(str(value)):
         raise ValidationError(
-            "Разрешены только английские буквы, символы @_ и цифры. " + message
+            "После @ допустимы только английские буквы, цифры и символ '_', общей "
+            "длиной от 5 до 32."
         )
 
 

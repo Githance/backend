@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.core.fields import TelegramField
 from apps.core.validators import validate_telegram_name
 from .models import User
 
@@ -26,11 +27,10 @@ class UserPublicSerializer(serializers.ModelSerializer):
 
 
 class UserPrivateSerializer(serializers.ModelSerializer):
-    telegram = serializers.CharField(
+    telegram = TelegramField(
         allow_blank=True,
         allow_null=True,
         validators=(validate_telegram_name,),
-        label="Телеграм",
     )
 
     class Meta:
@@ -47,8 +47,3 @@ class UserPrivateSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "email": {"read_only": True},
         }
-
-    def validate_telegram(self, value):
-        if value is not None and not value.startswith("@"):
-            value = "@" + value
-        return value
